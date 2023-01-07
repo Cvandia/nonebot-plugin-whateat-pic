@@ -26,7 +26,7 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 <details>
 <summary>使用 pip 安装</summary>
 
-    pip install nonebot-plugin-aidraw
+    pip install nonebot-plugin-whateat-pic
 </details>
 
 ## ⚙️ 配置
