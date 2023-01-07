@@ -1,0 +1,11 @@
+[project]
+name = "nonebot-plugin-whateat-pic"
+version = "1.0.1"
+description = "基于Nonebot2的今天吃什么（离线版）"
+authors = [{name="Camilia",email="1141538825@qq.com"}]
+license = {text = "MIT"}
+requires-python = ">=3.7"
+readme = "README.md"
+[project.urls]
+"Homeoage" = "https://github.com/Cvandia/nonebot-plugin-whateat-pic"
+"Bug Tracker" = "https://github.com/Cvandia/nonebot-plugin-whateat-pic/issues"
