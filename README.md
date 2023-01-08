@@ -1,4 +1,9 @@
-<a href="https://v2.nonebot.dev/store"><img src="https://github.com/A-kirami/nonebot-plugin-template/blob/resources/nbp_logo.png" width="180" height="180" alt="NoneBotPluginLogo"></a>
+<div align="center">
+
+<a href="https://v2.nonebot.dev/store"><img src="https://cn.bing.com/images/search?q=%E7%BE%8E%E9%A3%9F%E5%9B%BE%E7%89%87%E9%93%BE%E6%8E%A5&FORM=IQFRBA&id=BA7CBD246EA075D6D3C0FB494A8BC7A28203E7EE" width="180" height="180" alt="NoneBotPluginLogo"></a>
+
+</div>
+
 <div align="center">
 
 # nonebot-plugin-whateat-pic
