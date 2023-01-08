@@ -1,3 +1,4 @@
+<a href="https://v2.nonebot.dev/store"><img src="https://github.com/A-kirami/nonebot-plugin-template/blob/resources/nbp_logo.png" width="180" height="180" alt="NoneBotPluginLogo"></a>
 <div align="center">
 
 # nonebot-plugin-whateat-pic
