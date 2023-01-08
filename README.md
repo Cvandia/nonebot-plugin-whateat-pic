@@ -17,18 +17,11 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 ## 💿 安装
 
 <details>
-<summary>使用 nb-cli 安装</summary>
+<summary>安装</summary>
+ 将目标文件下载拖进nb2的插件文件夹就可
+ 
+ 一般路劲为/src/plugin
 
- 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
-
-    nb plugin install nonebot-plugin-whateat-pic
-</details>
-
-<details>
-<summary>使用 pip 安装</summary>
-
-    pip install nonebot-plugin-whateat-pic
-</details>
 
 ## ⚙️ 配置
 
