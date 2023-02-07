@@ -13,6 +13,10 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 
 </div>
 
+<div align="center">
+<a href="https://www.python.org/downloads/release/python-390/"><img src="https://img.shields.io/badge/python-3.8+-blue"></a>  <a href=""><img src="https://img.shields.io/badge/QQ-1141538825-yellow"></a> <a href="https://github.com/Cvandia/nonebot-plugin-whateat-pic/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue"></a> <a href="https://v2.nonebot.dev/"><img src="https://img.shields.io/badge/Nonebot2-rc1+-red"></a>
+</div>
+
 
 ## ⭐ 介绍
 
