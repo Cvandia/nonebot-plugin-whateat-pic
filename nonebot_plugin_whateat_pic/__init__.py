@@ -1,11 +1,11 @@
-from nonebot import on_regex
+from nonebot.adapters.onebot.v11 import MessageSegment
+from nonebot.plugin import on_regex
 from pathlib import Path
 import os
 import random
-from nonebot.adapters.onebot.v11 import MessageSegment
 
-what_eat=on_regex(r"^*吃什么$",priority=5)
-what_drink=on_regex(r"^*喝什么$",priority=5)
+what_eat=on_regex(r"^([今天|明天]?[早上|晚上|中午|夜宵])+吃什么",priority=5)
+what_drink=on_regex(r"^([今天|明天]?[早上|晚上|中午|夜宵])+喝什么",priority=5)
 
 #今天吃什么路劲
 img_eat_path = Path(os.path.join(os.path.dirname(__file__), "eat_pic"))

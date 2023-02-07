@@ -13,6 +13,10 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 
 </div>
 
+<div align="center">
+<a href="https://www.python.org/downloads/release/python-390/"><img src="https://img.shields.io/badge/python-3.8+-blue"></a>  <a href=""><img src="https://img.shields.io/badge/QQ-1141538825-yellow"></a> <a href="https://github.com/Cvandia/nonebot-plugin-whateat-pic/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue"></a> <a href="https://v2.nonebot.dev/"><img src="https://img.shields.io/badge/Nonebot2-rc1+-red"></a>
+</div>
+
 
 ## ⭐ 介绍
 
@@ -24,9 +28,18 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 
 <details>
 <summary>安装</summary>
- 将目标文件下载拖进nb2的插件文件夹就可
- 
- 一般路劲为/src/plugin
+
+pip 安装
+
+```
+pip install nonebot-plugin-whateat-pic
+```
+
+nb-cli安装
+
+```
+nb plugin install nonebot-plugin-whateat-pic
+```
  
 </details>
 
@@ -37,7 +50,7 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 
 ## ⭐ 使用
 
-### 指令：**吃什么，**喝什么
+### 指令：```**吃什么，**喝什么```
 如：```
     /今天吃什么、/早上吃什么，/夜宵喝什么
     ```
