@@ -5,8 +5,8 @@ import os
 import nonebot
 import random
 
-what_eat=on_regex(r"^((今天|明天)|(今天|明天)?(早上|晚上|中午|夜宵))吃什么$",priority=5)
-what_drink=on_regex(r"^((今天|明天)|(今天|明天)?(早上|晚上|中午|夜宵))喝什么$",priority=5)
+what_eat=on_regex(r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵)吃(什么|啥|点啥)$",priority=5)
+what_drink=on_regex(r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵)喝(什么|啥|点啥)$",priority=5)
 
 #今天吃什么路劲
 img_eat_path = Path(os.path.join(os.path.dirname(__file__), "eat_pic"))
@@ -45,7 +45,7 @@ async def wte():
         +MessageSegment.image(img)
     )
     try:
-        await what_eat.send("正在为你找好喝的……")
+        await what_eat.send("正在为你找好吃的……")
         await what_eat.send(msg, at_sender=True)
     except:
         await what_eat.finish("出错啦！没有找到好吃的~")
