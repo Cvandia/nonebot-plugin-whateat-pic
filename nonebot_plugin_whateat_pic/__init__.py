@@ -23,7 +23,7 @@ Bot_NICKNAME = Bot_NICKNAME[0] if Bot_NICKNAME else "脑积水"
 @what_drink.handle()
 async def wtd():
     img_name = random.choice(all_file_drink_name)
-    img = img_eat_path / img_name
+    img = img_drink_path / img_name
     with open(img, 'rb') as im:
         img_bytes = im.read()
     base64_str = "base64://" + base64.b64encode(img_bytes).decode()
