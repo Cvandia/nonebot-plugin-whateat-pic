@@ -28,7 +28,7 @@ async def wtd():
         img_bytes = im.read()
     base64_str = "base64://" + base64.b64encode(img_bytes).decode()
     msg=(
-        f"{Bot_NICKNAME}建议你吃: \n⭐{img.stem}⭐\n"
+        f"{Bot_NICKNAME}建议你喝: \n⭐{img.stem}⭐\n"
         + MessageSegment.image(base64_str)
     )
     try:
