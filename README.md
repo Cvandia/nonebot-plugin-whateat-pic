@@ -21,7 +21,7 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 ## ⭐ 介绍
 
 一款离线版决定今天吃喝什么的nb2插件，功能及其简单。
-~~借用~~改编自hosinoBot的插件[今天吃什么](https://github.com/A-kirami/whattoeat)
+~~抄袭~~改编自hosinoBot的插件[今天吃什么](https://github.com/A-kirami/whattoeat)
 由于本人第一次创建，有不足的地方还请指出
 
 ## 💿 安装
@@ -63,7 +63,7 @@ nb plugin install nonebot-plugin-whateat-pic
 
 ### 指令：```**吃什么，**喝什么```
 如：```
-    /今天吃什么、/早上吃什么，/夜宵喝什么
+    /今天晚上吃什么、/早上吃什么，/夜宵喝什么
     ```
     
 **注意**
