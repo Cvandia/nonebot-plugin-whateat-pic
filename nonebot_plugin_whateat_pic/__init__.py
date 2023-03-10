@@ -1,6 +1,8 @@
 from nonebot.adapters.onebot.v11 import MessageSegment,MessageEvent,Bot,Message,GroupMessageEvent
 from nonebot.exception import ActionFailed
 from nonebot.plugin import on_regex
+from nonebot.matcher import Matcher
+from nonebot.params import Arg
 from nonebot.log import logger
 from nonebot.typing import T_State
 from pathlib import Path
@@ -11,7 +13,8 @@ import random, base64
 
 what_eat = on_regex(r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",priority=5)
 what_drink = on_regex(r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",priority=5)
-view_dishes = on_regex(r"^(/)?查[看|寻]?全部(菜[单|品]|饮[料|品])$",priority=5)
+view_all_dishes = on_regex(r"^(/)?查[看|寻]?全部(菜[单|品]|饮[料|品])$",priority=5)
+view_dish = on_regex(r"^(/)?查[看|寻]?(菜[单|品]|饮[料|品])[\s]?(.*)?")
 
 #今天吃什么路径
 img_eat_path = Path(os.path.join(os.path.dirname(__file__), "eat_pic"))
@@ -26,11 +29,41 @@ Bot_NICKNAME = list(nonebot.get_driver().config.nickname)
 Bot_NICKNAME = Bot_NICKNAME[0] if Bot_NICKNAME else "脑积水"
 
 
-@view_dishes.handle()
+@view_dish.handle()
+async def got_name(matcher:Matcher,state:T_State,event:MessageEvent):
+    
+    #正则匹配组
+    args = list(state['_matched_groups'])
+    
+    if args[1] in ["菜单","菜品"]:
+        state['type'] = "吃的"
+    elif args[1] in ["饮料","饮品"]:
+        state['type'] = "喝的"
+        
+    #设置下一步got的arg    
+    if args[2]:
+        matcher.set_arg("name",args[2])
+
+
+        
+@view_dish.got("name",prompt=f"请告诉{Bot_NICKNAME}具体菜名或者饮品名吧")
+async def handle(state:T_State,name:Message = Arg()):
+    
+    if state['type'] == "吃的":
+        img = img_eat_path / (str(name)+".jpg")
+    elif state['type'] == "喝的":
+        img = img_drink_path / (str(name)+".jpg")
+          
+    try:
+        await view_dish.send(MessageSegment.image(img))
+    except ActionFailed:
+        await view_dish.finish("没有找到你所说的，请检查一下菜单吧",at_sender = True)
+
+
+@view_all_dishes.handle()
 async def handle(bot:Bot,event:MessageEvent,state:T_State):
     #正则匹配组
     args = list(state['_matched_groups'])
-    logger.warning(args[1])
     
     if args[1] in ["菜单","菜品"]:
         path = img_eat_path
@@ -48,7 +81,7 @@ async def handle(bot:Bot,event:MessageEvent,state:T_State):
         with open(img, 'rb') as im:
             img_bytes = im.read()
         base64_str = "base64://" + base64.b64encode(img_bytes).decode()
-        name = re.sub("[.jpg|.png]",'',name)
+        name = re.sub(".jpg",'',name)
         msg_list.append(f"{N}.{name}\n{MessageSegment.image(base64_str)}")
     await send_forward_msg(bot,event,Bot_NICKNAME,bot.self_id,msg_list)
     
