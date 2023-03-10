@@ -30,7 +30,6 @@ Bot_NICKNAME = Bot_NICKNAME[0] if Bot_NICKNAME else "脑积水"
 async def handle(bot:Bot,event:MessageEvent,state:T_State):
     #正则匹配组
     args = list(state['_matched_groups'])
-    logger.warning(args[1])
     
     if args[1] in ["菜单","菜品"]:
         path = img_eat_path
