@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-whateat-pic"
-version = "1.0.6"
+version = "1.0.8"
 description = "基于Nonebot2的今天吃什么（离线版）"
 authors = ["Cvandia"]
 license = "MIT"
