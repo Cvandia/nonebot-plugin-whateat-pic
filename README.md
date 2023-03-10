@@ -1,3 +1,4 @@
+
 <div align="center">
 
 <a href="https://v2.nonebot.dev/store"><img src="https://i3.meishichina.com/atta/recipe/2023/01/06/20230106167298595549937310737312.JPG?x-oss-process=style/p800" width="180" height="180" alt="NoneBotPluginLogo"></a>
@@ -79,3 +80,5 @@ nb plugin install nonebot-plugin-whateat-pic
 - [x] 或许添加更多的美食图片吧……
 - [x] 添加更多功能
 - [ ] 自定义添加菜单，饮品
+
+--- 喜欢记得点个star⭐---
