@@ -39,7 +39,7 @@ pip install nonebot-plugin-whateat-pic
 nb-cli安装
 
 ```
-nb plugin install nonebot-plugin-whateat-pic
+nb plugin install nonebot-plugin-whateat-pic --
 ```
  
  </details>
