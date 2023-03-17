@@ -23,7 +23,14 @@ _⭐基于Nonebot2的一款今天吃什么喝什么的插件⭐_
 
 一款离线版决定今天吃喝什么的nb2插件，功能及其简单。
 ~~抄袭~~改编自hosinoBot的插件[今天吃什么](https://github.com/A-kirami/whattoeat)
-由于本人第一次创建，有不足的地方还请指出
+有不足的地方还请指出
+
+
+<div align="center">
+
+### 或者你有啥关于该插件的新想法的，可以提issue或者pr (>A<)
+
+</div>
 
 ## 💿 安装
 
@@ -60,7 +67,7 @@ nb plugin install nonebot-plugin-whateat-pic --upgrade
 
 没有配置，有什么美食图片自己拖进去就行
 
-非要有的话就是你机器的名字“脑积水”
+非要有的话就是你机器的名字“脑积水”(我不相信有人会不配置这个)
 
 ## ⭐ 使用
 
@@ -79,6 +86,6 @@ nb plugin install nonebot-plugin-whateat-pic --upgrade
 ## 🌙 未来
 - [x] 或许添加更多的美食图片吧……
 - [x] 添加更多功能
-- [ ] 自定义添加菜单，饮品
+- [ ] 自定义添加菜单，饮品(~~我懒，或者帮我写个?~~)QwQ
 
 --- 喜欢记得点个star⭐---
