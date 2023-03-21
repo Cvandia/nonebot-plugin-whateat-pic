@@ -1,4 +1,5 @@
 
+
 <div align="center">
 
 <a href="https://v2.nonebot.dev/store"><img src="https://i3.meishichina.com/atta/recipe/2023/01/06/20230106167298595549937310737312.JPG?x-oss-process=style/p800" width="180" height="180" alt="NoneBotPluginLogo"></a>
@@ -64,10 +65,15 @@ nb plugin install nonebot-plugin-whateat-pic --upgrade
 
 
 ## ⚙️ 配置
+### 在env.中添加以下配置
 
-没有配置，有什么美食图片自己拖进去就行
+|名称|类型|默认值|说明|
+|:-----:|:----:|:----:|:------:|
+|whateat_cd|int|10|内置触发cd|
+|whateat_max|int|0|每日用户触发的最大次数，默认0时为无上限|
 
-非要有的话就是你机器的名字“脑积水”(我不相信有人会不配置这个)
+
+> 机器的名字“脑积水”是默认值，(我不相信有人不会配置nonebot2的nick_name)
 
 ## ⭐ 使用
 
@@ -78,6 +84,8 @@ nb plugin install nonebot-plugin-whateat-pic --upgrade
 |今天早上喝什么|否|私聊、群聊|随机发送饮品|任何|
 |查看全部菜单|否|私聊、群聊|查看全部菜单|任何|
 |查看菜单|否|私聊、群聊|查看指定菜单|任何|
+|添加菜单|否|私聊、群聊|自定义添加菜单|群主，超管，管理员|
+|删除菜单|否|私聊、群聊|自定义删除菜单|群主，超管，管理员|
 
 **注意**
 
@@ -86,6 +94,6 @@ nb plugin install nonebot-plugin-whateat-pic --upgrade
 ## 🌙 未来
 - [x] 或许添加更多的美食图片吧……
 - [x] 添加更多功能
-- [ ] 自定义添加菜单，饮品(~~我懒，或者帮我写个?~~)QwQ
+- [x] 自定义添加菜单，饮品(~~我懒，或者帮我写个?~~)QwQ（~~最后还是自己写~~）
 
 --- 喜欢记得点个star⭐---
