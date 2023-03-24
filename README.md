@@ -95,5 +95,6 @@ nb plugin install nonebot-plugin-whateat-pic --upgrade
 - [x] 或许添加更多的美食图片吧……
 - [x] 添加更多功能
 - [x] 自定义添加菜单，饮品(~~我懒，或者帮我写个?~~)QwQ（~~最后还是自己写~~）
+- [ ] 细化分类菜单，饮料（懒癌患者，>a<)
 
 --- 喜欢记得点个star⭐---
