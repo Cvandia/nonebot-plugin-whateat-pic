@@ -61,7 +61,7 @@ async def del_(state:T_State,name:Message = Arg()):
         
     try:
         os.remove(img)
-    except Exception:
+    except OSError:
         await del_dish.finish(f"不存在该{state['type']}，请检查下菜单再重试吧")
     await del_dish.send(f"已成功删除{state['type']}:{name}",at_sender = True)
     
@@ -173,7 +173,7 @@ async def wtd(msg:MessageEvent):
     else:
         is_max,user_count = check_max(msg,user_count)
         if is_max:
-            await what_drink.finish("今天已达最大次数，明天再来吧")
+            await what_drink.finish(random.choice(max_msg),at_sender = True)
         time = new_last_time
         img_name = random.choice(all_file_drink_name)
         img = img_drink_path / img_name
@@ -202,7 +202,7 @@ async def wte(msg:MessageEvent):
     else:
         is_max,user_count = check_max(msg,user_count)
         if is_max:
-            await what_eat.finish("今天已达最大次数，明天再来吧")
+            await what_eat.finish(random.choice(max_msg),at_sender = True)
         time = new_last_time
         img_name = random.choice(all_file_eat_name)
         img = img_eat_path / img_name
@@ -225,6 +225,7 @@ async def wte(msg:MessageEvent):
 
 #诶嘿你发现了宝藏>.<
 #这里啥也没有，嘿嘿
+#有机会再在这里写点东西吧，嘿嘿
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~分割区~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -235,10 +236,20 @@ def reset_user_count():
     user_count = {} 
 try:
     scheduler.add_job(
-        reset_user_count, "cron", hour='*', id="delete_date"
+        reset_user_count, "cron", hour='0', id="delete_date"
     )
 except ActionFailed as e:
     logger.warning(f"定时任务添加失败，{repr(e)}")
+    
+
+#上限回复消息
+max_msg = (
+    "你今天吃的够多了！不许再吃了(´-ωก`)",
+    "吃吃吃，就知道吃，你都吃饱了！明天再来(▼皿▼#)",
+    "(*｀へ´*)你猜我会不会再给你发好吃的图片",
+    f"没得吃的了，{Bot_NICKNAME}的食物都被你这坏蛋吃光了！",
+    "你在等我给你发好吃的？做梦哦！你都吃那么多了，不许再吃了！ヽ(≧Д≦)ノ"
+)
         
         
 #调用合并转发api函数        
