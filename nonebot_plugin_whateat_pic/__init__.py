@@ -3,11 +3,12 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls
 from nonebot.exception import ActionFailed
-from nonebot.plugin import on_regex
+from nonebot.plugin import on_regex, PluginMetadata
 from nonebot.matcher import Matcher
 from nonebot.params import Arg
 from nonebot.log import logger
 from nonebot.typing import T_State
+from .config import Config
 from nonebot import require
 try:
     scheduler = require("nonebot_plugin_apscheduler").scheduler
@@ -19,8 +20,43 @@ from .check_pass import check_cd,check_max
 import os
 import re
 import nonebot
-import requests
+from httpx import AsyncClient
 import random, base64
+
+__plugin_meta__ = PluginMetadata(
+    name = "今天吃喝什么呢",
+    description = "随机推荐吃的和喝的",
+    config = Config,
+    usage = """今天吃什么:随机推荐吃的\n
+    今天喝什么:随机推荐喝的\n
+    查看菜单:查看所有菜单\n
+    查看菜单 菜单名:查看具体菜单\n
+    查看饮料:查看所有饮料\n
+    查看饮料 饮料名:查看具体饮料\n
+    添加菜单 菜名:添加菜单\n
+    添加饮料 饮料名:添加饮料\n
+    删除菜单 菜名:删除菜单\n
+    删除饮料 饮料名:删除饮料""",
+    type = "application",
+    homepage = "https://github.com/Cvandia/nonebot-plugin-whateat-pic",
+    supported_adapters = {"~onebot.v11"},
+    extra={
+        "unique_name": "nonebot-plugin-whateat-pic",
+        "example": """
+        今天吃什么\n
+        今天喝什么\n
+        查看菜单\n
+        查看菜单 菜名\n
+        查看饮料\n
+        查看饮料 饮料名\n
+        添加菜单 菜名\n
+        添加饮料 饮料名\n
+        删除菜单 菜名\n
+        删除饮料 饮料名""",
+        "author": "divandia <106718176+Cvandia@users.noreply.github.com>",
+        "version": "1.1.5",
+    },
+)
 
 what_eat = on_regex(r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$", priority=5)
 what_drink = on_regex(r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$", priority=5)
@@ -93,13 +129,14 @@ async def handle(state:T_State, img:Message = Arg()):
         path = img_eat_path
     elif state['type'] in ['饮料','饮品']:
         path = img_drink_path
-        
-        
-    dish_img = requests.get(url = img_url[0])
-    with open(path / str(state['name']+".jpg"),"wb") as f:
-        f.write(dish_img.content)
-    await add_dish.finish(f"成功添加{state['type']}:{state['name']}\n"+MessageSegment.image(img_url))
-
+    try:
+        async with AsyncClient() as client:
+            dish_img = await client.get(url = img_url[0])
+            with open(path / str(state['name']+".jpg"),"wb") as f:
+                f.write(dish_img.content)
+        await add_dish.finish(f"成功添加{state['type']}:{state['name']}\n"+MessageSegment.image(img_url))
+    except Exception:
+        await add_dish.finish("添加失败，请稍后重试",at_sender = True)
 
 @view_dish.handle()
 async def got_name(matcher:Matcher,state:T_State,event:MessageEvent):
@@ -226,6 +263,7 @@ async def wte(msg:MessageEvent):
 #诶嘿你发现了宝藏>.<
 #这里啥也没有，嘿嘿
 #有机会再在这里写点东西吧，嘿嘿
+#简单更新下meta,想重构下cd的代码的(因为有轮子，不想重复造轮子)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~分割区~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
