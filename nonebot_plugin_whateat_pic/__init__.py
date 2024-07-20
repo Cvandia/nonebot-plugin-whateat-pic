@@ -5,7 +5,6 @@ from nonebot.adapters.onebot.v11 import (
     Message,
     GroupMessageEvent,
 )
-from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls
 from nonebot.exception import ActionFailed
@@ -28,13 +27,14 @@ from .check_pass import check_cd, check_max
 import os
 import re
 import nonebot
+import httpx
 from httpx import AsyncClient
-import random, base64
+import random
+import base64
 
 __plugin_meta__ = PluginMetadata(
     name="今天吃喝什么呢",
     description="随机推荐吃的和喝的",
-    config=Config,
     usage="""今天吃什么:随机推荐吃的\n
     今天喝什么:随机推荐喝的\n
     查看菜单:查看所有菜单\n
@@ -67,22 +67,24 @@ __plugin_meta__ = PluginMetadata(
 )
 
 what_eat = on_regex(
-    r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$", priority=5
+    r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",
+    priority=5,
 )
 what_drink = on_regex(
-    r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$", priority=5
+    r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",
+    priority=5,
 )
 view_all_dishes = on_regex(r"^(/)?查[看|寻]?全部(菜[单|品]|饮[料|品])$", priority=5)
 view_dish = on_regex(r"^(/)?查[看|寻]?(菜[单|品]|饮[料|品])[\s]?(.*)?", priority=5)
 add_dish = on_regex(
     r"^(/)?添[加]?(菜[品|单]|饮[品|料])[\s]?(.*)?",
     priority=99,
-    permission=GROUP_ADMIN | GROUP_OWNER | SUPERUSER,
+    permission=SUPERUSER,
 )
 del_dish = on_regex(
     r"^(/)?删[除]?(菜[品|单]|饮[品|料])[\s]?(.*)?",
     priority=5,
-    permission=GROUP_ADMIN | GROUP_OWNER | SUPERUSER,
+    permission=SUPERUSER,
 )
 
 # 今天吃什么路径
@@ -94,12 +96,14 @@ img_drink_path = Path(os.path.join(os.path.dirname(__file__), "drink_pic"))
 all_file_drink_name = os.listdir(str(img_drink_path))
 
 # 载入bot名字
-Bot_NICKNAME = list(nonebot.get_driver().config.nickname)
-Bot_NICKNAME = Bot_NICKNAME[0] if Bot_NICKNAME else "脑积水"
+NICKNAME = list(nonebot.get_driver().config.nickname)
+Bot_NICKNAME = NICKNAME[0] if NICKNAME else "脑积水"
 
 
 @del_dish.handle()
-async def got_dish_name(state: T_State, matcher: Matcher, args:Tuple[Any,...] = RegexGroup()):
+async def got_dish_name(
+    state: T_State, matcher: Matcher, args: Tuple[Any, ...] = RegexGroup()
+):
     state["type"] = args[1]
     if args[2]:
         matcher.set_arg("name", args[2])
@@ -122,7 +126,9 @@ async def del_(state: T_State, name: Message = Arg()):
 
 
 @add_dish.handle()
-async def got_dish_name(matcher: Matcher, state: T_State, args:Tuple[Any,...] = RegexGroup()):
+async def got_dish_name(
+    matcher: Matcher, state: T_State, args: Tuple[Any, ...] = RegexGroup()
+):
     state["type"] = args[1]
     if args[2]:
         matcher.set_arg("dish_name", args[2])
@@ -150,17 +156,26 @@ async def handle(state: T_State, img: Message = Arg()):
     try:
         async with AsyncClient() as client:
             dish_img = await client.get(url=img_url[0])
-            with open(path / str(state["name"] + ".jpg"), "wb") as f:
+            with open(path.joinpath(str(state["name"] + ".jpg")), "wb") as f:
                 f.write(dish_img.content)
         await add_dish.finish(
-            f"成功添加{state['type']}:{state['name']}\n" + MessageSegment.image(img_url)
+            f"成功添加{state['type']}:{state['name']}\n"
+            + MessageSegment.image(img_url[0])
         )
-    except Exception:
+    except (
+        OSError,
+        ActionFailed,
+        IndexError,
+        httpx.ConnectError,
+        httpx.ConnectTimeout,
+    ):
         await add_dish.finish("添加失败，请稍后重试", at_sender=True)
 
 
 @view_dish.handle()
-async def got_name(matcher: Matcher, state: T_State, args:Tuple[Any,...] = RegexGroup()):
+async def got_name(
+    matcher: Matcher, state: T_State, args: Tuple[Any, ...] = RegexGroup()
+):
     # 设置下一步got的arg
     if args[1] in ["菜单", "菜品"]:
         state["type"] = "吃的"
@@ -186,7 +201,7 @@ async def handle(state: T_State, name: Message = Arg()):
 
 
 @view_all_dishes.handle()
-async def handle(bot: Bot, event: MessageEvent, args:Tuple[Any,...] = RegexGroup()):
+async def handle(bot: Bot, event: MessageEvent, args: Tuple[Any, ...] = RegexGroup()):
     # 设置下一步got的arg
     if args[1] in ["菜单", "菜品"]:
         path = img_eat_path
@@ -200,7 +215,7 @@ async def handle(bot: Bot, event: MessageEvent, args:Tuple[Any,...] = RegexGroup
     N = 0
     for name in all_name:
         N += 1
-        img = path / name
+        img = path.joinpath(name)
         with open(img, "rb") as im:
             img_bytes = im.read()
         base64_str = "base64://" + base64.b64encode(img_bytes).decode()
@@ -232,10 +247,12 @@ async def wtd(msg: MessageEvent):
         with open(img, "rb") as im:
             img_bytes = im.read()
         base64_str = "base64://" + base64.b64encode(img_bytes).decode()
-        msg = f"{Bot_NICKNAME}建议你喝: \n⭐{img.stem}⭐\n" + MessageSegment.image(base64_str)
+        send_msg = MessageSegment.text(
+            f"{Bot_NICKNAME}建议你喝: \n⭐{img.stem}⭐\n"
+        ) + MessageSegment.image(base64_str)
         try:
             await what_drink.send("正在为你找好喝的……")
-            await what_drink.send(msg, at_sender=True)
+            await what_drink.send(send_msg, at_sender=True)
         except ActionFailed:
             await what_drink.finish("出错啦！没有找到好喝的~")
 
@@ -257,10 +274,12 @@ async def wte(msg: MessageEvent):
         with open(img, "rb") as im:
             img_bytes = im.read()
         base64_str = "base64://" + base64.b64encode(img_bytes).decode()
-        msg = f"{Bot_NICKNAME}建议你吃: \n⭐{img.stem}⭐\n" + MessageSegment.image(base64_str)
+        send_msg = MessageSegment.text(
+            f"{Bot_NICKNAME}建议你吃: \n⭐{img.stem}⭐\n"
+        ) + MessageSegment.image(base64_str)
         try:
             await what_eat.send("正在为你找好吃的……")
-            await what_eat.send(msg, at_sender=True)
+            await what_eat.send(send_msg, at_sender=True)
         except ActionFailed:
             await what_eat.finish("出错啦！没有找到好吃的~")
 
@@ -282,6 +301,8 @@ def reset_user_count():
 
 
 try:
+    if not scheduler:
+        raise ActionFailed("未安装定时插件依赖")
     scheduler.add_job(reset_user_count, "cron", hour="0", id="delete_date")
 except ActionFailed as e:
     logger.warning(f"定时任务添加失败，{repr(e)}")
