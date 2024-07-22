@@ -4,6 +4,8 @@ from nonebot.adapters.onebot.v11 import (
     Bot,
     Message,
     GroupMessageEvent,
+    GROUP_OWNER,
+    GROUP_ADMIN,
 )
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls
@@ -18,7 +20,8 @@ from nonebot import require
 from typing import Tuple, Any
 
 try:
-    scheduler = require("nonebot_plugin_apscheduler").scheduler
+    require("nonebot_plugin_apscheduler")
+    from nonebot_plugin_apscheduler import scheduler
 except Exception:
     scheduler = None
     logger.warning("未安装定时插件依赖")
@@ -79,12 +82,12 @@ view_dish = on_regex(r"^(/)?查[看|寻]?(菜[单|品]|饮[料|品])[\s]?(.*)?",
 add_dish = on_regex(
     r"^(/)?添[加]?(菜[品|单]|饮[品|料])[\s]?(.*)?",
     priority=99,
-    permission=SUPERUSER,
+    permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
 )
 del_dish = on_regex(
     r"^(/)?删[除]?(菜[品|单]|饮[品|料])[\s]?(.*)?",
     priority=5,
-    permission=SUPERUSER,
+    permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
 )
 
 # 今天吃什么路径
@@ -101,9 +104,7 @@ Bot_NICKNAME = NICKNAME[0] if NICKNAME else "脑积水"
 
 
 @del_dish.handle()
-async def got_dish_name(
-    state: T_State, matcher: Matcher, args: Tuple[Any, ...] = RegexGroup()
-):
+async def _(state: T_State, matcher: Matcher, args: Tuple[Any, ...] = RegexGroup()):
     state["type"] = args[1]
     if args[2]:
         matcher.set_arg("name", args[2])
@@ -114,8 +115,12 @@ async def del_(state: T_State, name: Message = Arg()):
     if str(name) == "取消":
         await del_dish.finish("已取消")
     if state["type"] in ["菜单", "菜品"]:
+        # 删除all_file_eat_name中的文件名
+        all_file_eat_name.remove(str(name) + ".jpg")
         img = img_eat_path / (str(name) + ".jpg")
     elif state["type"] in ["饮料", "饮品"]:
+        # 删除all_file_drink_name中的文件名
+        all_file_drink_name.remove(str(name) + ".jpg")
         img = img_drink_path / (str(name) + ".jpg")
 
     try:
@@ -142,7 +147,7 @@ async def got(state: T_State, dish_name: Message = Arg()):
 
 
 @add_dish.got("img", prompt="⭐图片也发给我吧\n发送“取消”可取消添加")
-async def handle(state: T_State, img: Message = Arg()):
+async def _(state: T_State, img: Message = Arg()):
     if str(img) == "取消":
         await add_dish.finish("已取消")
     img_url = extract_image_urls(img)
@@ -151,8 +156,12 @@ async def handle(state: T_State, img: Message = Arg()):
 
     if state["type"] in ["菜品", "菜单"]:
         path = img_eat_path
+        # 添加到all_file_eat_name中
+        all_file_eat_name.append(str(state["name"] + ".jpg"))
     elif state["type"] in ["饮料", "饮品"]:
         path = img_drink_path
+        # 添加到all_file_drink_name中
+        all_file_drink_name.append(str(state["name"] + ".jpg"))
     try:
         async with AsyncClient() as client:
             dish_img = await client.get(url=img_url[0])
@@ -188,7 +197,7 @@ async def got_name(
 
 
 @view_dish.got("name", prompt=f"请告诉{Bot_NICKNAME}具体菜名或者饮品名吧")
-async def handle(state: T_State, name: Message = Arg()):
+async def _(state: T_State, name: Message = Arg()):
     if state["type"] == "吃的":
         img = img_eat_path / (str(name) + ".jpg")
     elif state["type"] == "喝的":
