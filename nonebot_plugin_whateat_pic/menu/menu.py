@@ -22,7 +22,7 @@ class Menu:
         self.font_size = 30
         # 加载字体
         self.menu_font = ImageFont.truetype(
-            Path(__file__).parent / "SIMKAI.TTF", self.font_size
+            Path(__file__).parent / "FZSJ-QINGCRJ.TTF", self.font_size
         )
 
     @property
