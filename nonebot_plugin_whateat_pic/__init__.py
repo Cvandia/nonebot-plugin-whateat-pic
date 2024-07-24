@@ -13,22 +13,13 @@ from nonebot.exception import ActionFailed
 from nonebot.plugin import on_regex, PluginMetadata
 from nonebot.matcher import Matcher
 from nonebot.params import Arg, RegexGroup
-from nonebot.log import logger
 from nonebot.typing import T_State
-from .config import Config
-from nonebot import require
 from typing import Tuple, Any
-
-try:
-    require("nonebot_plugin_apscheduler")
-    from nonebot_plugin_apscheduler import scheduler
-except Exception:
-    scheduler = None
-    logger.warning("未安装定时插件依赖")
 from pathlib import Path
 from .check_pass import check_cd, check_max
+from .menu.menu import Menu
 import os
-import re
+import io
 import nonebot
 import httpx
 from httpx import AsyncClient
@@ -71,22 +62,22 @@ __plugin_meta__ = PluginMetadata(
 
 what_eat = on_regex(
     r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",
-    priority=5,
+    priority=20,
 )
 what_drink = on_regex(
     r"^(/)?[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",
-    priority=5,
+    priority=20,
 )
 view_all_dishes = on_regex(r"^(/)?查[看|寻]?全部(菜[单|品]|饮[料|品])$", priority=5)
 view_dish = on_regex(r"^(/)?查[看|寻]?(菜[单|品]|饮[料|品])[\s]?(.*)?", priority=5)
 add_dish = on_regex(
     r"^(/)?添[加]?(菜[品|单]|饮[品|料])[\s]?(.*)?",
-    priority=99,
+    priority=20,
     permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
 )
 del_dish = on_regex(
     r"^(/)?删[除]?(菜[品|单]|饮[品|料])[\s]?(.*)?",
-    priority=5,
+    priority=20,
     permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
 )
 
@@ -213,24 +204,21 @@ async def _(state: T_State, name: Message = Arg()):
 async def handle(bot: Bot, event: MessageEvent, args: Tuple[Any, ...] = RegexGroup()):
     # 设置下一步got的arg
     if args[1] in ["菜单", "菜品"]:
-        path = img_eat_path
-        all_name = all_file_eat_name
+        menu_type = "eat"
     elif args[1] in ["饮料", "饮品"]:
-        path = img_drink_path
-        all_name = all_file_drink_name
+        menu_type = "drink"
 
-    # 合并转发
-    msg_list = [f"{Bot_NICKNAME}查询到的{args[1]}如下"]
-    N = 0
-    for name in all_name:
-        N += 1
-        img = path.joinpath(name)
-        with open(img, "rb") as im:
-            img_bytes = im.read()
-        base64_str = "base64://" + base64.b64encode(img_bytes).decode()
-        name = re.sub(".jpg", "", name)
-        msg_list.append(f"{N}.{name}\n{MessageSegment.image(base64_str)}")
-    await send_forward_msg(bot, event, Bot_NICKNAME, bot.self_id, msg_list)
+    try:
+        menu = Menu(menu_type)
+        send_msg_list = [MessageSegment.text("菜单如下：")]
+        for img in menu.draw_menu():
+            img_bytesio = io.BytesIO()
+            img.save(img_bytesio, format="JPEG")
+            send_msg_list.append(MessageSegment.image(img_bytesio))
+    except OSError:
+        await view_all_dishes.finish("没有找到菜单，请稍后重试", at_sender=True)
+
+    await send_forward_msg(bot, event, Bot_NICKNAME, bot.self_id, send_msg_list)
 
 
 # 初始化内置时间的last_time
@@ -240,14 +228,14 @@ user_count = {}
 
 
 @what_drink.handle()
-async def wtd(msg: MessageEvent):
+async def wtd(event: MessageEvent):
     global time, user_count
     check_result, remain_time, new_last_time = check_cd(time)
     if not check_result:
         time = new_last_time
         await what_drink.finish(f"cd冷却中,还有{remain_time}秒", at_sender=True)
     else:
-        is_max, user_count = check_max(msg, user_count)
+        is_max, user_count = check_max(event, user_count)
         if is_max:
             await what_drink.finish(random.choice(max_msg), at_sender=True)
         time = new_last_time
@@ -267,14 +255,14 @@ async def wtd(msg: MessageEvent):
 
 
 @what_eat.handle()
-async def wte(msg: MessageEvent):
+async def wte(event: MessageEvent):
     global time, user_count
     check_result, remain_time, new_last_time = check_cd(time)
     if not check_result:
         time = new_last_time
         await what_eat.finish(f"cd冷却中,还有{remain_time}秒", at_sender=True)
     else:
-        is_max, user_count = check_max(msg, user_count)
+        is_max, user_count = check_max(event, user_count)
         if is_max:
             await what_eat.finish(random.choice(max_msg), at_sender=True)
         time = new_last_time
@@ -301,20 +289,6 @@ async def wte(msg: MessageEvent):
 # 简单更新下meta,想重构下cd的代码的(因为有轮子，不想重复造轮子)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~分割区~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-# 每日0点重置用户数据
-def reset_user_count():
-    global user_count
-    user_count = {}
-
-
-try:
-    if not scheduler:
-        raise ActionFailed("未安装定时插件依赖")
-    scheduler.add_job(reset_user_count, "cron", hour="0", id="delete_date")
-except ActionFailed as e:
-    logger.warning(f"定时任务添加失败，{repr(e)}")
 
 
 # 上限回复消息

@@ -1,13 +1,13 @@
 import time
 from .config import config
-from nonebot import get_driver
 from typing import Tuple 
+from nonebot.adapters.onebot.v11 import MessageEvent
 
 cd = config.whateat_cd
 max_count = config.whateat_max
 
 def check_cd(last_time:int) ->Tuple[bool,int,int]:
-    #检查cd
+    # 检查cd
     current_time = int(time.time())
     delta_time = current_time - last_time
     if delta_time < cd:
@@ -16,7 +16,7 @@ def check_cd(last_time:int) ->Tuple[bool,int,int]:
         return True,0,current_time
 
 
-def check_max(message,user_count:dict) ->Tuple[bool,dict]:
+def check_max(message: MessageEvent, user_count: dict) -> Tuple[bool, dict]:
     # 判断是否达到每日最大值
     user_id = message.get_user_id()
     if max_count == 0:
