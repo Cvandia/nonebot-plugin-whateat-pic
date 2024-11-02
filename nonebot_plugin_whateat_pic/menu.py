@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 from typing import Literal, Iterator
+from .config import config
 
 
 class Menu:
@@ -13,16 +14,16 @@ class Menu:
 
     def __init__(self, menu_type: Literal["drink", "eat"]) -> None:
         # 菜单图片的路径
-        self.dish_path = Path(__file__).parent.parent / (menu_type + "_pic") 
+        self.dish_path = Path(config.whatpic_res_path) / f"{menu_type}_pic"
         # 获取所有菜品的名字
         self.all_dish_name = [i.stem for i in self.dish_path.iterdir()]
         # 菜单背景图
-        self.menu_background = Image.open(Path(__file__).parent / "menu_bg.jpg")
+        self.menu_background = Image.open(Path(__file__).parent / "menu_res" / "menu_bg.jpg")
         # 字体大小
         self.font_size = 30
         # 加载字体
         self.menu_font = ImageFont.truetype(
-            str(Path(__file__).parent.parent / "font" / "FZSJ-QINGCRJ.TTF"), self.font_size
+            str(Path(__file__).parent / "menu_res" / "msyh.ttc"), self.font_size
         )
 
     @property
@@ -57,6 +58,8 @@ class Menu:
                     fill="black",
                 )
             yield menu_img
+    
+    
 
 # 测试程序
 # mn = Menu("eat")
