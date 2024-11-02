@@ -1,13 +1,13 @@
 from typing import Literal
 from pathlib import Path
-
+from nonebot.log import logger
 from .config import config
 
 import random
 import os
 
 
-def random_pic(menu_type: Literal["drink", "eat"]) -> bytes:
+def random_pic(menu_type: Literal["drink", "eat"]) -> tuple[Path, str]:
     """
     随机获取一张图片
     """
@@ -20,5 +20,4 @@ def random_pic(menu_type: Literal["drink", "eat"]) -> bytes:
 
     pic_name = random.choice(pic_list)
     pic_path = Path(config.whatpic_res_path) / f"{menu_type}_pic" / pic_name
-    with open(pic_path, "rb") as f:
-        return f.read()
+    return pic_path, pic_name.split(".")[0]

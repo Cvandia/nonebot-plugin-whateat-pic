@@ -1,12 +1,10 @@
 from nonebot.log import logger
 from pathlib import Path
 from rich.progress import Progress
-from .config import config
-
 import asyncio
 import json
 import httpx
-
+from .config import config
 
 available_urls = [
     "https://raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/",
@@ -61,6 +59,9 @@ async def check_resource():
     async with httpx.AsyncClient() as client:
 
         async def download_image(file_path: Path, file_name: str):
+            if file_path.exists():
+                logger.info(f"{file_path} already exists, skipping download.")
+                return
             if content := await _download(client, file_name):
                 file_path.parent.mkdir(parents=True, exist_ok=True)
                 with file_path.open("wb") as f:
@@ -80,7 +81,17 @@ async def check_resource():
                 await task
                 progress.update(progress_task, advance=1)
 
+from nonebot import get_driver
+import asyncio
+
+driver = get_driver()
+@driver.on_startup
+async def on_startup():
+    logger.info("Checking resources...")
+    asyncio.create_task(check_resource())
 
 # 测试代码
 # if __name__ == "__main__":
 #     asyncio.run(check_resource())
+
+

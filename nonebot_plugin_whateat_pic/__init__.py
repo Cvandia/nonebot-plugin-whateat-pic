@@ -4,8 +4,7 @@ require("nonebot_plugin_alconna")
 require("nonebot_plugin_apscheduler")
 
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
-from . import config as _config
-from . import matcher as _matcher
+from . import matcher, config, check_on_statup
 
 
 __plugin_meta__ = PluginMetadata(
