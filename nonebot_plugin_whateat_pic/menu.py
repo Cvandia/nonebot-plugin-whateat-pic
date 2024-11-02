@@ -5,12 +5,13 @@ from .config import config
 
 
 class Menu:
-    '''
+    """
     生成菜单的类
-    '''
-    dish_path: Path # 菜品图片的路径
-    menu_background: Image.Image # 菜单背景图
-    menu_font: ImageFont.FreeTypeFont # 菜单字体
+    """
+
+    dish_path: Path  # 菜品图片的路径
+    menu_background: Image.Image  # 菜单背景图
+    menu_font: ImageFont.FreeTypeFont  # 菜单字体
 
     def __init__(self, menu_type: Literal["drink", "eat"]) -> None:
         # 菜单图片的路径
@@ -18,7 +19,9 @@ class Menu:
         # 获取所有菜品的名字
         self.all_dish_name = [i.stem for i in self.dish_path.iterdir()]
         # 菜单背景图
-        self.menu_background = Image.open(Path(__file__).parent / "menu_res" / "menu_bg.jpg")
+        self.menu_background = Image.open(
+            Path(__file__).parent / "menu_res" / "menu_bg.jpg"
+        )
         # 字体大小
         self.font_size = 30
         # 加载字体
@@ -58,8 +61,7 @@ class Menu:
                     fill="black",
                 )
             yield menu_img
-    
-    
+
 
 # 测试程序
 # mn = Menu("eat")

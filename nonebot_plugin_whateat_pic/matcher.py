@@ -47,7 +47,9 @@ view_menu_matcher = on_alconna(
 )
 
 add_menu_matcher = on_alconna(
-    Alconna("添加菜单", Args["name?", str], Args["img_type?", str], Args["img?", Image]),
+    Alconna(
+        "添加菜单", Args["name?", str], Args["img_type?", str], Args["img?", Image]
+    ),
     use_cmd_start=True,
     rule=SUPERUSER,
 )
@@ -60,10 +62,14 @@ del_menu_matcher = on_alconna(
 
 
 eat_pic_matcher.shortcut(
-    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",fuzzy=False,prefix=True,
+    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",
+    fuzzy=False,
+    prefix=True,
 )
 drink_pic_matcher.shortcut(
-    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",fuzzy=False,prefix=True,
+    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",
+    fuzzy=False,
+    prefix=True,
 )
 
 
@@ -130,11 +136,7 @@ async def _(event: Event, img_type: str):
 
 
 @add_menu_matcher.handle()
-async def _(
-    event: Event,
-    name: Match[str],
-    img_type: Match[str]
-):
+async def _(event: Event, name: Match[str], img_type: Match[str]):
     if name.available:
         add_menu_matcher.set_path_arg("name", name.result)
     if img_type.available:
