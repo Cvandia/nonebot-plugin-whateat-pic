@@ -93,7 +93,7 @@ async def handle_drink_pic(event: Event):
         TIME = new_last_time
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
     elif not check_max_result:
-        pic_path, pic_name = random_pic("eat")
+        pic_path, pic_name = random_pic("drink")
         send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你喝🎉{pic_name}"))
         send_msg.append(Image(path=pic_path))  # type: ignore
         await send_msg.finish()
