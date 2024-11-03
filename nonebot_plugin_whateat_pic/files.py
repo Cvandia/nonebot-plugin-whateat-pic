@@ -9,7 +9,6 @@ def save_pic(img: bytes, img_type: str, name: str) -> None:
     保存图片
     """
     save_path = Path(config.whatpic_res_path) / f"{img_type}_pic" / name
-    logger.warning(f"save_path: {save_path}")
     if isinstance(img, bytes):
         with open(save_path, "wb") as f:
             f.write(img)
