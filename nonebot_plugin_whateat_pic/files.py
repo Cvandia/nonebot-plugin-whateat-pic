@@ -1,10 +1,8 @@
 from pathlib import Path
 from nonebot.log import logger
-from nonebot_plugin_alconna.uniseg import Image
 from .config import config
 
-
-def save_pic(img: bytes, img_type: str, name: str) -> None:
+def save_pic(img: bytes, img_type: str, name:str) -> None:
     """
     保存图片
     """
