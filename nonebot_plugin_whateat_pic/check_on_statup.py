@@ -58,9 +58,13 @@ async def check_resource():
     # 下载资源
     async with httpx.AsyncClient() as client:
 
+        exist_count = 0
+
         async def download_image(file_path: Path, file_name: str):
             if file_path.exists():
-                logger.info(f"{file_path} already exists, skipping download.")
+                logger.debug(f"{file_path} already exists, skipping download.")
+                nonlocal exist_count
+                exist_count += 1
                 return
             if content := await _download(client, file_name):
                 file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -81,17 +85,21 @@ async def check_resource():
                 await task
                 progress.update(progress_task, advance=1)
 
+        logger.info(f"Downloaded {len(download_list) - exist_count} images.")
+
+
 from nonebot import get_driver
 import asyncio
 
 driver = get_driver()
+
+
 @driver.on_startup
 async def on_startup():
     logger.info("Checking resources...")
     asyncio.create_task(check_resource())
 
+
 # 测试代码
 # if __name__ == "__main__":
 #     asyncio.run(check_resource())
-
-
