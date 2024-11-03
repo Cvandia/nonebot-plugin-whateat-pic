@@ -81,17 +81,19 @@ async def check_resource():
                 await task
                 progress.update(progress_task, advance=1)
 
+
 from nonebot import get_driver
 import asyncio
 
 driver = get_driver()
+
+
 @driver.on_startup
 async def on_startup():
     logger.info("Checking resources...")
     asyncio.create_task(check_resource())
 
+
 # 测试代码
 # if __name__ == "__main__":
 #     asyncio.run(check_resource())
-
-
