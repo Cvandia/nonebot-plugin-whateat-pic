@@ -31,24 +31,37 @@ async def check_resource():
                     pass
             logger.warning(f"{url} download failed!")
 
+    # 下载资源列表
     async with httpx.AsyncClient() as client:
         if content := await _download(client, "download_list.json"):
             resource_list = json.loads(content.decode("utf-8"))
         else:
             return
 
-    # 下载资源文件
+    # 检查资源目录下文件是否完整
+    drink_pic_path = Path(config.whatpic_res_path) / "drink_pic"  # 本地资源目录
+    eat_pic_path = Path(config.whatpic_res_path) / "eat_pic"  # 本地资源目录
+    # todo: 检查文件是否完整
+
+    # for item in resource_list["drink_pic"]:
+    #     if not (drink_pic_path / item["name"]).exists():
+    #         logger.warning(f"{drink_pic_path / item['name']} not exists!")
+    # for item in resource_list["eat_pic"]:
+    #     if not (eat_pic_path / item["name"]).exists():
+    #         logger.warning(f"{eat_pic_path / item['name']} not exists!")
+
+    # 创建下载任务列表
     download_list: list[tuple[Path, str]] = []
 
     # 添加下载任务
     for item in resource_list["drink_pic"]:
-        path_name = "drink_pic/" + item["name"]
-        drink_pic_path = Path(config.whatpic_res_path) / path_name
-        download_list.append((drink_pic_path, path_name))
+        path_name = (
+            "drink_pic/" + item["name"]
+        )  # 在线资源路径: github.com/Cvandia/nonebot-plugin-whateat-pic/main/res/+ path_name
+        download_list.append((drink_pic_path / item["name"], path_name))
     for item in resource_list["eat_pic"]:
-        path_name = "eat_pic/" + item["name"]
-        eat_pic_path = Path(config.whatpic_res_path) / path_name
-        download_list.append((eat_pic_path, path_name))
+        path_name = "eat_pic/" + item["name"]  # 在线资源路径
+        download_list.append((eat_pic_path / item["name"], path_name))
 
     if len(download_list):
         logger.info("Downloading images ...")
