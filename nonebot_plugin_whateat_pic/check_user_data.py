@@ -12,13 +12,10 @@ def check_iscd(last_time: int) -> Tuple[bool, int, int]:
     判断是否在冷却时间内
 
     Args:
-        last_time: 上次调用的时间
+        last_time(int): 上次使用时间
 
     Returns:
-        Tuple[bool, int, int]:
-            bool: 是否在cd内
-            int: 剩余cd时间
-            int: 当前时间
+        - tuple[bool, int, int]: 是否在冷却时间内, 剩余时间, 当前时间
     """
     now_time = int(time.time())
     delta_time = now_time - last_time
@@ -29,7 +26,16 @@ def check_iscd(last_time: int) -> Tuple[bool, int, int]:
 
 
 def check_ismax(message: Event, user_count: dict) -> Tuple[bool, dict]:
-    # 判断是否达到每日最大值
+    """
+    判断是否达到最大次数
+
+    Args:
+        message(Event): 消息事件
+        user_count(dict): 用户使用次数记录
+
+    Returns:
+        - tuple[bool, dict]: 是否达到最大次数, 用户使用次数记录
+    """
     user_id = message.get_user_id()
     if max_count == 0:
         return False, {}

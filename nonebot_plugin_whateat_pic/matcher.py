@@ -78,16 +78,16 @@ async def handle_eat_pic(event: Event):
     global TIME, USER_DATA, MAX_MSG
     check_result, remain_time, new_last_time = check_iscd(TIME)
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
-    if check_result:
+    if check_max_result:
+        await UniMessage.text(random.choice(MAX_MSG)).finish()
+    elif check_result:
         TIME = new_last_time
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
-    elif not check_max_result:
-        pic_path, pic_name = random_pic("eat")
-        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你吃🎉{pic_name}"))
-        send_msg.append(Image(path=pic_path))  # type: ignore
-        await send_msg.finish()
     else:
-        await UniMessage.text(random.choice(MAX_MSG)).finish()
+        pic_path, pic_name = random_pic("eat")
+        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你吃🎉\n{pic_name}"))
+        send_msg.append(Image(path=pic_path))
+        await send_msg.finish()
 
 
 @drink_pic_matcher.handle()
@@ -95,16 +95,16 @@ async def handle_drink_pic(event: Event):
     global TIME, USER_DATA, MAX_MSG
     check_result, remain_time, new_last_time = check_iscd(TIME)
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
-    if check_result:
+    if check_max_result:
+        await UniMessage.text(random.choice(MAX_MSG)).finish()
+    elif check_result:
         TIME = new_last_time
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
-    elif not check_max_result:
-        pic_path, pic_name = random_pic("drink")
-        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你喝🎉{pic_name}"))
-        send_msg.append(Image(path=pic_path))  # type: ignore
-        await send_msg.finish()
     else:
-        await UniMessage.text(random.choice(MAX_MSG)).finish()
+        pic_path, pic_name = random_pic("drink")
+        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你喝🎉\n{pic_name}"))
+        send_msg.append(Image(path=pic_path))
+        await send_msg.finish()
 
 
 @view_menu_matcher.handle()
