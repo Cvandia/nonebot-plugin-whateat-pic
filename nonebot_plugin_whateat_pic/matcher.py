@@ -47,7 +47,9 @@ view_menu_matcher = on_alconna(
 )
 
 add_menu_matcher = on_alconna(
-    Alconna("添加菜单", Args["name?", str], Args["img_type?", str], Args["img?", Image]),
+    Alconna(
+        "添加菜单", Args["name?", str], Args["img_type?", str], Args["img?", Image]
+    ),
     use_cmd_start=True,
     permission=SUPERUSER,
 )
@@ -60,10 +62,14 @@ del_menu_matcher = on_alconna(
 
 
 eat_pic_matcher.shortcut(
-    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",fuzzy=False,prefix=True,
+    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",
+    fuzzy=False,
+    prefix=True,
 )
 drink_pic_matcher.shortcut(
-    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",fuzzy=False,prefix=True,
+    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",
+    fuzzy=False,
+    prefix=True,
 )
 
 
@@ -72,7 +78,7 @@ async def handle_eat_pic(event: Event):
     global TIME, USER_DATA, MAX_MSG
     check_result, remain_time, new_last_time = check_iscd(TIME)
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
-    if check_result or check_max_result:
+    if check_result:
         TIME = new_last_time
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
     elif not check_max_result:
@@ -89,7 +95,7 @@ async def handle_drink_pic(event: Event):
     global TIME, USER_DATA, MAX_MSG
     check_result, remain_time, new_last_time = check_iscd(TIME)
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
-    if check_result or check_max_result:
+    if check_result:
         TIME = new_last_time
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
     elif not check_max_result:
@@ -130,11 +136,7 @@ async def _(event: Event, img_type: str):
 
 
 @add_menu_matcher.handle()
-async def _(
-    event: Event,
-    name: Match[str],
-    img_type: Match[str]
-):
+async def _(event: Event, name: Match[str], img_type: Match[str]):
     if name.available:
         add_menu_matcher.set_path_arg("name", name.result)
     if img_type.available:

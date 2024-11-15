@@ -1,36 +1,32 @@
-name: Publish
-
-on:
-  push:
-    tags:
-      - '*'
-  workflow_dispatch:
-
-jobs:
-  pypi-publish:
-    name: Upload release to PyPI
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: "3.x"
-    - name: Install pypa/build
-      run: >-
-        python -m
-        pip install
-        build
-        --user
-    - name: Build a binary wheel and a source tarball
-      run: >-
-        python -m
-        build
-        --sdist
-        --wheel
-        --outdir dist/
-        .
-    - name: Publish distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
+name: Publish package to PyPI
+  
+on:  
+  push:  
+    tags:  
+      - 'v*' # 匹配"v1.0.0"、"v1.0.0-alpha"等发布标签
+  
+permissions:  
+  contents: write  # 如果您的包发布到 GitHub Packages，则需要此权限  
+  packages: write  # 如果您的包发布到 GitHub Packages，则需要此权限  
+  
+jobs:  
+  deploy:  
+    runs-on: ubuntu-latest  
+  
+    steps:  
+    - uses: actions/checkout@v4  
+    - name: Set up Python  
+      uses: actions/setup-python@v3  
+      with:  
+        python-version: '3.x'  
+    - name: Install dependencies  
+      run: |  
+        python -m pip install --upgrade pip  
+        pip install build  
+    - name: Build package  
+      run: python -m build  
+    - name: Publish package  
+      uses: pypa/gh-action-pypi-publish@release/v1  # 使用一个稳定的版本标签，而不是具体的提交哈希  
+      with:  
+        user: __token__  
         password: ${{ secrets.PYPI_API_TOKEN }}

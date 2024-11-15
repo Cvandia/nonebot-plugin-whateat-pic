@@ -8,13 +8,24 @@ max_count = config.whateat_max
 
 
 def check_iscd(last_time: int) -> Tuple[bool, int, int]:
-    # 检查cd
-    current_time = int(time.time())
-    delta_time = current_time - last_time
+    """
+    判断是否在冷却时间内
+
+    Args:
+        last_time: 上次调用的时间
+
+    Returns:
+        Tuple[bool, int, int]:
+            bool: 是否在cd内
+            int: 剩余cd时间
+            int: 当前时间
+    """
+    now_time = int(time.time())
+    delta_time = now_time - last_time
     if delta_time < cd:
-        return True, cd - delta_time, last_time
+        return True, cd - delta_time, now_time
     else:
-        return False, 0, current_time
+        return False, 0, now_time
 
 
 def check_ismax(message: Event, user_count: dict) -> Tuple[bool, dict]:

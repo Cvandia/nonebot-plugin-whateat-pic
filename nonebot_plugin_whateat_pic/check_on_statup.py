@@ -88,7 +88,7 @@ async def check_resource():
             *Progress.get_default_columns(), "[yellow]{task.completed}/{task.total}"
         ) as progress:
             progress_task = progress.add_task(
-                "[green]Downloading...", total=len(download_list)
+                "[green]Downloading pic...", total=len(download_list)
             )
             tasks = [
                 download_image(file_path, file_name)
