@@ -8,7 +8,7 @@ dev = [
 ]
 
 [tool.pdm.build]
-includes = []
+includes = ["nonebot_plugin_whateat_pic"]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
