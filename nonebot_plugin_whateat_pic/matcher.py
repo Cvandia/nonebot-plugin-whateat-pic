@@ -37,7 +37,6 @@ eat_pic_matcher = on_alconna(
 
 drink_pic_matcher = on_alconna(
     Alconna("今天喝什么"),
-    use_cmd_start=True,
 )
 
 view_menu_matcher = on_alconna(
@@ -64,24 +63,21 @@ del_menu_matcher = on_alconna(
 eat_pic_matcher.shortcut(
     r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)吃(什么|啥|点啥)$",
     fuzzy=False,
-    prefix=True,
 )
 drink_pic_matcher.shortcut(
     r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜)喝(什么|啥|点啥)$",
     fuzzy=False,
-    prefix=True,
 )
 
 
 @eat_pic_matcher.handle()
 async def handle_eat_pic(event: Event):
     global TIME, USER_DATA, MAX_MSG
-    check_result, remain_time, new_last_time = check_iscd(TIME)
+    check_result, remain_time, TIME = check_iscd(TIME)
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
     if check_max_result:
         await UniMessage.text(random.choice(MAX_MSG)).finish()
     elif check_result:
-        TIME = new_last_time
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
     else:
         pic_path, pic_name = random_pic("eat")
@@ -93,12 +89,11 @@ async def handle_eat_pic(event: Event):
 @drink_pic_matcher.handle()
 async def handle_drink_pic(event: Event):
     global TIME, USER_DATA, MAX_MSG
-    check_result, remain_time, new_last_time = check_iscd(TIME)
+    check_result, remain_time, TIME = check_iscd(TIME)
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
     if check_max_result:
         await UniMessage.text(random.choice(MAX_MSG)).finish()
     elif check_result:
-        TIME = new_last_time
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
     else:
         pic_path, pic_name = random_pic("drink")
