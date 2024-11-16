@@ -188,9 +188,9 @@ async def _(event: Event, name: str):
 @del_menu_matcher.got_path("img_type", prompt=f"请告诉{BOT_NAME}具体菜单类型吧")
 async def _(event: Event, img_type: str, name: str):
     if img_type in ["菜品", "菜单"]:
-        del_menu_matcher.set_path_arg("img_type", "eat")
+        img_type = "eat"
     elif img_type in ["饮料", "饮品"]:
-        del_menu_matcher.set_path_arg("img_type", "drink")
+        img_type = "drink"
     else:
         await UniMessage.text("菜单类型错误，请重新输入").finish()
     try:
