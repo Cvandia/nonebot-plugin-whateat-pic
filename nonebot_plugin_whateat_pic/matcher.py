@@ -194,10 +194,10 @@ async def _(event: Event, img_type: str, name: str):
     else:
         await UniMessage.text("菜单类型错误，请重新输入").finish()
     try:
-        delete_pic(type, name)  # type: ignore
+        delete_pic(img_type, name)  # type: ignore
         await UniMessage.text(f"成功删除{name}").finish()
-    except FileNotFoundError:
-        await UniMessage.text("删除失败，请稍后重试").finish()
+    except Exception as e:
+        await UniMessage.text(f"删除失败, {e}").finish()
 
 
 # 每日8点清空用户数据

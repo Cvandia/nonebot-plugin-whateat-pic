@@ -7,7 +7,7 @@ def save_pic(img: bytes, img_type: str, name: str) -> None:
     """
     保存图片
     """
-    save_path = Path(config.whatpic_res_path) / f"{img_type}_pic" / name
+    save_path = Path(config.whatpic_res_path) / f"{img_type}_pic" / (name + ".jpg")
     if isinstance(img, bytes):
         with open(save_path, "wb") as f:
             f.write(img)
@@ -20,8 +20,10 @@ def delete_pic(img_type: str, name: str) -> None:
     """
     删除图片
     """
-    delete_path = Path(config.whatpic_res_path) / f"{img_type}_pic" / name
+    delete_path = Path(config.whatpic_res_path) / f"{img_type}_pic" / (name + ".jpg")
     if delete_path.exists():
-        delete_path.unlink()
-    else:
-        raise FileNotFoundError(f"{delete_path} not found")
+        try:
+            delete_path.unlink()
+        except OSError:
+            logger.error(f"delete {delete_path} failed")
+            raise Exception(f"delete {delete_path} failed")
