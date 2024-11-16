@@ -49,18 +49,18 @@ nb-cli安装
 ```
 nb plugin install nonebot-plugin-whateat-pic --upgrade
 ```
- 
+
  </details>
- 
+
  <details>
  <summary>注意</summary>
- 
+
  由于包含有图片，包容量较大，推荐镜像站下载
-  
+
  清华源```https://pypi.tuna.tsinghua.edu.cn/simple```
- 
+
  阿里源```https://mirrors.aliyun.com/pypi/simple/```
- 
+
 </details>
 
 

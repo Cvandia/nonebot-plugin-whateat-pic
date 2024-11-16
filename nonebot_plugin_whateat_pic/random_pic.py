@@ -1,6 +1,5 @@
 from typing import Literal
 from pathlib import Path
-from nonebot.log import logger
 from .config import config
 
 import random

@@ -1,5 +1,5 @@
 from nonebot import get_driver
-from nonebot.adapters import Event, Bot
+from nonebot.adapters import Event
 from nonebot.permission import SUPERUSER
 from nonebot.log import logger
 

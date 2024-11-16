@@ -1,13 +1,17 @@
 repos:
-  - repo: https://github.com/hadialqattan/pycln
-    rev: v2.4.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0  # 选择最新的稳定版本
     hooks:
-      - id: pycln
-        args: [--config, pyproject.toml]
+      - id: trailing-whitespace  # 去除多余的空格
+      - id: end-of-file-fixer    # 确保文件以空行结束
+      - id: check-yaml           # 检查 YAML 文件格式
+      - id: check-added-large-files  # 检查提交中是否包含过大的文件
 
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.4
     hooks:
-      - id: black
-        stages: [pre-commit]
-        
+      # Run the linter.
+      - id: ruff
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format

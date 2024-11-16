@@ -1,9 +1,12 @@
-from nonebot.log import logger
-from pathlib import Path
-from rich.progress import Progress
 import asyncio
 import json
+from pathlib import Path
+from nonebot import get_driver
+
 import httpx
+from nonebot.log import logger
+from rich.progress import Progress
+
 from .config import config
 
 available_urls = [
@@ -70,7 +73,6 @@ async def check_resource():
 
     # 下载资源
     async with httpx.AsyncClient() as client:
-
         exist_count = 0
 
         async def download_image(file_path: Path, file_name: str):
@@ -100,9 +102,6 @@ async def check_resource():
 
         logger.info(f"Downloaded {len(download_list) - exist_count} images.")
 
-
-from nonebot import get_driver
-import asyncio
 
 driver = get_driver()
 
