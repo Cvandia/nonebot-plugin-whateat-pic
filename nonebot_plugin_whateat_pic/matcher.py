@@ -196,7 +196,7 @@ async def _(event: Event, img_type: str, name: str):
     try:
         delete_pic(img_type, name)  # type: ignore
         await UniMessage.text(f"成功删除{name}").finish()
-    except Exception as e:
+    except FileNotFoundError as e:
         await UniMessage.text(f"删除失败, {e}").finish()
 
 

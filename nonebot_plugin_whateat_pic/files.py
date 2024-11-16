@@ -24,6 +24,8 @@ def delete_pic(img_type: str, name: str) -> None:
     if delete_path.exists():
         try:
             delete_path.unlink()
-        except OSError:
-            logger.error(f"delete {delete_path} failed")
-            raise Exception(f"delete {delete_path} failed")
+        except OSError as e:
+            logger.error(f"Error: {e}")
+            raise
+    else:
+        raise FileNotFoundError(f"{delete_path} not found")
