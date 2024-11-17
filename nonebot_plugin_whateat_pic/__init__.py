@@ -18,6 +18,7 @@ __plugin_meta__ = PluginMetadata(
     删除菜单
     查看菜单
     """,
+    type="application",
     homepage="https://github.com/Cvandia/nonebot-plugin-whateat-pic",
     supported_adapters=inherit_supported_adapters("nonebot_plugin_alconna"),
 )
