@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0  # 选择最新的稳定版本
+    rev: v5.0.0  # 选择最新的稳定版本
     hooks:
       - id: trailing-whitespace  # 去除多余的空格
       - id: end-of-file-fixer    # 确保文件以空行结束
