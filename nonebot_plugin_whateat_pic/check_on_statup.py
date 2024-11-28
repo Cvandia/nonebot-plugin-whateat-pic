@@ -20,7 +20,6 @@ available_urls = [
 
 async def check_resource():
     semaphore = asyncio.Semaphore(10)
-    global available_urls
 
     async def _download(client: httpx.AsyncClient, name: str):
         async with semaphore:
@@ -44,14 +43,7 @@ async def check_resource():
     # 检查资源目录下文件是否完整
     drink_pic_path = Path(config.whatpic_res_path) / "drink_pic"  # 本地资源目录
     eat_pic_path = Path(config.whatpic_res_path) / "eat_pic"  # 本地资源目录
-    # todo: 检查文件是否完整
-
-    # for item in resource_list["drink_pic"]:
-    #     if not (drink_pic_path / item["name"]).exists():
-    #         logger.warning(f"{drink_pic_path / item['name']} not exists!")
-    # for item in resource_list["eat_pic"]:
-    #     if not (eat_pic_path / item["name"]).exists():
-    #         logger.warning(f"{eat_pic_path / item['name']} not exists!")
+    # TODO: 检查文件是否完整
 
     # 创建下载任务列表
     download_list: list[tuple[Path, str]] = []
