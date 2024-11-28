@@ -71,10 +71,9 @@ drink_pic_matcher.shortcut(
 
 
 @eat_pic_matcher.handle()
-async def handle_eat_pic(event: Event):
-    global TIME, USER_DATA, MAX_MSG
-    check_result, remain_time, TIME = check_iscd(TIME)
-    check_max_result, USER_DATA = check_ismax(event, USER_DATA)
+async def handle_eat_pic(event: Event, time, user_data):
+    check_result, remain_time, time = check_iscd(time)
+    check_max_result, user_data = check_ismax(event, user_data)
     if check_max_result:
         await UniMessage.text(random.choice(MAX_MSG)).finish()
     elif check_result:
@@ -87,29 +86,28 @@ async def handle_eat_pic(event: Event):
 
 
 @drink_pic_matcher.handle()
-async def handle_drink_pic(event: Event):
-    global TIME, USER_DATA, MAX_MSG
-    check_result, remain_time, TIME = check_iscd(TIME)
-    check_max_result, USER_DATA = check_ismax(event, USER_DATA)
+async def handle_drink_pic(event: Event, time, user_data, bot_name, max_msg):
+    check_result, remain_time, time = check_iscd(time)
+    check_max_result, user_data = check_ismax(event, user_data)
     if check_max_result:
-        await UniMessage.text(random.choice(MAX_MSG)).finish()
+        await UniMessage.text(random.choice(max_msg)).finish()
     elif check_result:
         await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
     else:
         pic_path, pic_name = random_pic("drink")
-        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你喝🎉\n{pic_name}"))
+        send_msg = UniMessage(Text(f"🎉{bot_name}建议你喝🎉\n{pic_name}"))
         send_msg.append(Image(path=pic_path))
         await send_msg.finish()
 
 
 @view_menu_matcher.handle()
-async def handle_view_menu(event: Event, img_type: Match[str]):
+async def handle_view_menu(img_type: Match[str]):
     if img_type.available:
         view_menu_matcher.set_path_arg("img_type", img_type.result)
 
 
 @view_menu_matcher.got_path("img_type", prompt=f"请告诉{BOT_NAME}具体菜单类型吧")
-async def _(event: Event, img_type: str):
+async def _(img_type: str):
     menu_type = img_type.strip()
     if menu_type in ["菜单", "菜品"]:
         menu_type = "eat"
@@ -131,7 +129,7 @@ async def _(event: Event, img_type: str):
 
 
 @add_menu_matcher.handle()
-async def _(event: Event, name: Match[str], img_type: Match[str]):
+async def _(name: Match[str], img_type: Match[str]):
     if name.available:
         add_menu_matcher.set_path_arg("name", name.result)
     if img_type.available:
@@ -139,13 +137,13 @@ async def _(event: Event, name: Match[str], img_type: Match[str]):
 
 
 @add_menu_matcher.got_path("name", prompt=f"请告诉{BOT_NAME}具体菜名或者饮品名吧")
-async def _(event: Event, name: str):
+async def _(name: str):
     if not name:
         await UniMessage.text("菜名不能为空，请重新输入").finish()
 
 
 @add_menu_matcher.got_path("img_type", prompt=f"请告诉{BOT_NAME}具体菜单类型吧")
-async def _(event: Event, img_type: str):
+async def _(img_type: str):
     if img_type in ["菜品", "菜单"]:
         add_menu_matcher.set_path_arg("img_type", "eat")
     elif img_type in ["饮料", "饮品"]:
@@ -172,7 +170,7 @@ async def _(
 
 
 @del_menu_matcher.handle()
-async def _(event: Event, name: Match[str], img_type: Match[str]):
+async def _(name: Match[str], img_type: Match[str]):
     if name.available:
         del_menu_matcher.set_path_arg("name", name.result)
     if img_type.available:
@@ -180,13 +178,13 @@ async def _(event: Event, name: Match[str], img_type: Match[str]):
 
 
 @del_menu_matcher.got_path("name", prompt=f"请告诉{BOT_NAME}具体菜名或者饮品名吧")
-async def _(event: Event, name: str):
+async def _(name: str):
     if not name:
         await UniMessage.text("菜名不能为空，请重新输入").finish()
 
 
 @del_menu_matcher.got_path("img_type", prompt=f"请告诉{BOT_NAME}具体菜单类型吧")
-async def _(event: Event, img_type: str, name: str):
+async def _(img_type: str, name: str):
     if img_type in ["菜品", "菜单"]:
         img_type = "eat"
     elif img_type in ["饮料", "饮品"]:
@@ -203,7 +201,6 @@ async def _(event: Event, img_type: str, name: str):
 # 每日8点清空用户数据
 @scheduler.scheduled_job("cron", hour=8)
 async def _():
-    global USER_DATA
-    USER_DATA = {}
+    USER_DATA.clear()
     logger.info("已清空用户数据")
     return

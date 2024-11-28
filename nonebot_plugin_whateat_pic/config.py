@@ -1,10 +1,6 @@
 from nonebot.plugin import get_plugin_config
 from pydantic import BaseModel
 
-"""
-解决pydantic v2 无法获取配置的问题
-"""
-
 
 class Config(BaseModel):
     whateat_cd: int = 10
