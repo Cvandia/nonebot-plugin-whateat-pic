@@ -66,7 +66,7 @@ async def check_resource():
         path_name = "eat_pic/" + item["name"]  # 在线资源路径
         download_list.append((eat_pic_path / item["name"], path_name))
 
-    if len(download_list):
+    if download_list:
         logger.info("Downloading images ...")
     else:
         return
