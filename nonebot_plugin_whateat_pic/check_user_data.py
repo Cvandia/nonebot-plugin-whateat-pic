@@ -1,13 +1,14 @@
 import time
-from .config import config
-from typing import Tuple
+
 from nonebot.adapters import Event
+
+from .config import config
 
 cd = config.whateat_cd
 max_count = config.whateat_max
 
 
-def check_iscd(last_time: int) -> Tuple[bool, int, int]:
+def check_iscd(last_time: float) -> tuple[bool, float, float]:
     """
     判断是否在冷却时间内
 
@@ -17,15 +18,14 @@ def check_iscd(last_time: int) -> Tuple[bool, int, int]:
     Returns:
         - tuple[bool, int, int]: 是否在冷却时间内, 剩余时间, 当前时间
     """
-    now_time = int(time.time())
+    now_time = time.time()
     delta_time = now_time - last_time
     if delta_time < cd:
         return True, cd - delta_time, now_time
-    else:
-        return False, 0, now_time
+    return False, 0, now_time
 
 
-def check_ismax(message: Event, user_count: dict) -> Tuple[bool, dict]:
+def check_ismax(message: Event, user_count: dict) -> tuple[bool, dict]:
     """
     判断是否达到最大次数
 
@@ -44,5 +44,4 @@ def check_ismax(message: Event, user_count: dict) -> Tuple[bool, dict]:
     if user_count[f"{user_id}"] < max_count:
         user_count[f"{user_id}"] += 1
         return False, user_count
-    else:
-        return True, user_count
+    return True, user_count

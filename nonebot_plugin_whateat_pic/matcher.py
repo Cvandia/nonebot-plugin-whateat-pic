@@ -1,27 +1,24 @@
+import io
+import secrets
+
 from nonebot import get_driver
 from nonebot.adapters import Event
-from nonebot.permission import SUPERUSER
 from nonebot.log import logger
-
-from nonebot_plugin_alconna import on_alconna, Alconna, Args, Match
-from nonebot_plugin_alconna.uniseg import UniMessage, Text, Image
+from nonebot.permission import SUPERUSER
+from nonebot_plugin_alconna import Alconna, Args, Match, on_alconna
+from nonebot_plugin_alconna.uniseg import Image, Text, UniMessage
 from nonebot_plugin_alconna.uniseg.tools import image_fetch
-
 from nonebot_plugin_apscheduler import scheduler
 
-from .random_pic import random_pic
 from .check_user_data import check_iscd, check_ismax
+from .files import delete_pic, save_pic
 from .menu import Menu
-from .files import save_pic, delete_pic
-
-import random
-import io
-
+from .random_pic import random_pic
 
 NICKNAME = list(get_driver().config.nickname)
 BOT_NAME = NICKNAME[0] if NICKNAME else "脑积水"
 
-TIME = 0
+TIME = 0.0
 USER_DATA = {}
 MAX_MSG = [
     "你今天吃的够多了！不许再吃了(´-ωก`)",
@@ -71,13 +68,14 @@ drink_pic_matcher.shortcut(
 
 
 @eat_pic_matcher.handle()
-async def handle_eat_pic(event: Event, time, user_data):
-    check_result, remain_time, time = check_iscd(time)
-    check_max_result, user_data = check_ismax(event, user_data)
+async def handle_eat_pic(event: Event):
+    global TIME, USER_DATA
+    check_result, remain_time, TIME = check_iscd(TIME)
+    check_max_result, USER_DATA = check_ismax(event, USER_DATA)
     if check_max_result:
-        await UniMessage.text(random.choice(MAX_MSG)).finish()
+        await UniMessage.text(secrets.choice(MAX_MSG)).finish()
     elif check_result:
-        await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
+        await UniMessage.text(f"cd冷却中,还有{remain_time:.2f}秒").finish()
     else:
         pic_path, pic_name = random_pic("eat")
         send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你吃🎉\n{pic_name}"))
@@ -86,16 +84,17 @@ async def handle_eat_pic(event: Event, time, user_data):
 
 
 @drink_pic_matcher.handle()
-async def handle_drink_pic(event: Event, time, user_data, bot_name, max_msg):
-    check_result, remain_time, time = check_iscd(time)
-    check_max_result, user_data = check_ismax(event, user_data)
+async def handle_drink_pic(event: Event):
+    global TIME, USER_DATA
+    check_result, remain_time, TIME = check_iscd(TIME)
+    check_max_result, USER_DATA = check_ismax(event, USER_DATA)
     if check_max_result:
-        await UniMessage.text(random.choice(max_msg)).finish()
+        await UniMessage.text(secrets.choice(MAX_MSG)).finish()
     elif check_result:
-        await UniMessage.text(f"cd冷却中,还有{remain_time}秒").finish()
+        await UniMessage.text(f"cd冷却中,还有{remain_time:.2f}秒").finish()
     else:
         pic_path, pic_name = random_pic("drink")
-        send_msg = UniMessage(Text(f"🎉{bot_name}建议你喝🎉\n{pic_name}"))
+        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你喝🎉\n{pic_name}"))
         send_msg.append(Image(path=pic_path))
         await send_msg.finish()
 
@@ -203,4 +202,3 @@ async def _(img_type: str, name: str):
 async def _():
     USER_DATA.clear()
     logger.info("已清空用户数据")
-    return

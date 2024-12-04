@@ -1,6 +1,9 @@
-from PIL import Image, ImageDraw, ImageFont
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Literal, Iterator
+from typing import Literal
+
+from PIL import Image, ImageDraw, ImageFont
+
 from .config import config
 
 
@@ -64,8 +67,3 @@ class Menu:
 
 
 # 测试程序
-# mn = Menu("eat")
-# for i in mn.draw_menu():
-#     i.show()
-#     if input("是否继续") == "n":
-#         break

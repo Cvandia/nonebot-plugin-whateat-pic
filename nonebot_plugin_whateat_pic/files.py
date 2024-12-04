@@ -1,5 +1,7 @@
 from pathlib import Path
+
 from nonebot.log import logger
+
 from .config import config
 
 
@@ -9,7 +11,7 @@ def save_pic(img: bytes, img_type: str, name: str) -> None:
     """
     save_path = Path(config.whatpic_res_path) / f"{img_type}_pic" / (name + ".jpg")
     if isinstance(img, bytes):
-        with open(save_path, "wb") as f:
+        with Path.open(save_path, "wb") as f:
             f.write(img)
     else:
         logger.error(f"img must be bytes, but got {type(img)}")

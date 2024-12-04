@@ -1,9 +1,9 @@
 import asyncio
 import json
 from pathlib import Path
-from nonebot import get_driver
 
 import httpx
+from nonebot import get_driver
 from nonebot.log import logger
 from rich.progress import Progress
 
@@ -27,11 +27,13 @@ async def check_resource():
                 url = base_url + "refs/heads/main/res/" + name
                 try:
                     resp = await client.get(url, timeout=20, follow_redirects=True)
-                    resp.raise_for_status()
-                    return resp.content
+                    if resp.raise_for_status():
+                        logger.debug(f"{url} download success!")
+                        return resp.content
                 except httpx.HTTPError:
                     pass
             logger.warning(f"{url} download failed!")
+            return None
 
     # 下载资源列表
     async with httpx.AsyncClient() as client:
@@ -101,9 +103,8 @@ driver = get_driver()
 @driver.on_startup
 async def on_startup():
     logger.info("Checking resources...")
-    asyncio.create_task(check_resource())
+    task = asyncio.create_task(check_resource())
+    await task
 
 
 # 测试代码
-# if __name__ == "__main__":
-#     asyncio.run(check_resource())

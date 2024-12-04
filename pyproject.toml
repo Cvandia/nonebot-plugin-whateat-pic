@@ -1,12 +1,6 @@
 [tool.pdm]
 distribution = true
 
-[tool.pdm.dev-dependencies]
-dev = [
-    "nb-cli<1.0.0,>=0.6.0",
-    "black<23.0.0,>=22.1.0",
-]
-
 [tool.pdm.build]
 includes = ["nonebot_plugin_whateat_pic"]
 [build-system]
@@ -37,3 +31,6 @@ license = {text = "MIT"}
 [project.urls]
 homepage = "https://github.com/Cvandia/nonebot-plugin-whateat-pic"
 repository = "https://github.com/Cvandia/nonebot-plugin-whateat-pic"
+
+[dependency-groups]
+dev = ["black<23.0.0,>=22.1.0", "ruff>=0.8.1", "pre-commit>=4.0.1"]

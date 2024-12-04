@@ -1,11 +1,10 @@
 from nonebot import require
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 
-
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_apscheduler")
 
-from . import check_on_statup as _  # noqa
+from . import check_on_statup as _
 from . import matcher as _  # noqa
 
 __plugin_meta__ = PluginMetadata(
