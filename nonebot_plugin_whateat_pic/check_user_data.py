@@ -13,15 +13,14 @@ def check_iscd(last_time: float) -> tuple[bool, float, float]:
     判断是否在冷却时间内
 
     Args:
-        last_time(int): 上次使用时间
+        last_time(float): 上次使用时间
 
     Returns:
-        - tuple[bool, int, int]: 是否在冷却时间内, 剩余时间, 当前时间
+        - tuple[bool, float, float]: 是否在冷却时间内, 剩余冷却时间, 当前时间
     """
     now_time = time.time()
-    delta_time = now_time - last_time
-    if delta_time < cd:
-        return True, cd - delta_time, now_time
+    if now_time - last_time < cd:
+        return True, cd - (now_time - last_time), last_time
     return False, 0, now_time
 
 

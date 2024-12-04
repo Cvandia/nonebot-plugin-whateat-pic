@@ -69,9 +69,10 @@ drink_pic_matcher.shortcut(
 
 @eat_pic_matcher.handle()
 async def handle_eat_pic(event: Event):
-    global TIME, USER_DATA
-    check_result, remain_time, TIME = check_iscd(TIME)
+    global TIME
+    global USER_DATA
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
+    check_result, remain_time, TIME = check_iscd(TIME)
     if check_max_result:
         await UniMessage.text(secrets.choice(MAX_MSG)).finish()
     elif check_result:
@@ -85,9 +86,10 @@ async def handle_eat_pic(event: Event):
 
 @drink_pic_matcher.handle()
 async def handle_drink_pic(event: Event):
-    global TIME, USER_DATA
-    check_result, remain_time, TIME = check_iscd(TIME)
+    global TIME
+    global USER_DATA
     check_max_result, USER_DATA = check_ismax(event, USER_DATA)
+    check_result, remain_time, TIME = check_iscd(TIME)
     if check_max_result:
         await UniMessage.text(secrets.choice(MAX_MSG)).finish()
     elif check_result:
