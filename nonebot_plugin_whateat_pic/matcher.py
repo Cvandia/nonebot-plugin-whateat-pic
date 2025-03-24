@@ -30,10 +30,12 @@ MAX_MSG = [
 
 eat_pic_matcher = on_alconna(
     Alconna("今天吃什么"),
+    use_cmd_start=True,
 )
 
 drink_pic_matcher = on_alconna(
     Alconna("今天喝什么"),
+    use_cmd_start=True,
 )
 
 view_menu_matcher = on_alconna(
@@ -60,10 +62,12 @@ del_menu_matcher = on_alconna(
 eat_pic_matcher.shortcut(
     r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜|早|晚)吃(什么|啥|点啥)$",
     fuzzy=False,
+    prefix=True,
 )
 drink_pic_matcher.shortcut(
     r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜|早|晚)喝(什么|啥|点啥)$",
     fuzzy=False,
+    prefix=True,
 )
 
 
@@ -125,8 +129,8 @@ async def _(img_type: str):
             img.save(img_bytesio, format="JPEG")
             send_msg_list.append(Image(raw=img_bytesio))  # type: ignore
         await send_msg_list.finish()
-    except OSError:
-        await UniMessage.text("没有找到菜单，请稍后重试").finish()
+    except OSError as e:
+        await UniMessage.text(f"没有找到菜单，请稍后重试\n{e}").finish()
 
 
 @add_menu_matcher.handle()
@@ -166,8 +170,8 @@ async def _(
     try:
         save_pic(img, img_type=img_type, name=name)
         await UniMessage.text(f"成功添加{name}").finish()
-    except OSError:
-        await UniMessage.text("添加失败，请稍后重试").finish()
+    except OSError as e:
+        await UniMessage.text(f"添加失败，请稍后重试\n{e}").finish()
 
 
 @del_menu_matcher.handle()
