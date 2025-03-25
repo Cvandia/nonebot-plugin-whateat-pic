@@ -1,16 +1,15 @@
 import json
-import os
 from pathlib import Path
 
 # 把./drink_pic/下的所有图片和./eat_pic/下的所有图片的文件名写入到./downloaded.json中
 
 
-def get_file_names(directory):
+def get_file_names(directory: Path):
     """获取给定目录中的文件名列表。"""
     return [
-        {"name": file}
-        for file in os.listdir(directory)
-        if Path(directory / file).is_file()
+        {"name": entry.name}
+        for entry in directory.iterdir()
+        if entry.is_file()
     ]
 
 
