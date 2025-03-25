@@ -14,7 +14,7 @@ available_urls = [
     "https://fastly.jsdelivr.net/gh/Cvandia/nonebot-plugin-whateat-pic@",
     "https://raw.gitmirror.com/Cvandia/nonebot-plugin-whateat-pic/",
     "https://ghproxy.cfd/https:/raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/",
-    "https://ghfast.top/https:/raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/"
+    "https://ghfast.top/https:/raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/",
     # 无法使用的镜像
     # "https://mirror.ghproxy.com/https://raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/",
     # "https://cdn.jsdelivr.net/gh/Cvandia/nonebot-plugin-whateat-pic@",
