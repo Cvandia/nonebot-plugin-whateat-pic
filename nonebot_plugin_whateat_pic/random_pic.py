@@ -12,7 +12,7 @@ def random_pic(menu_type: Literal["drink", "eat"]) -> tuple[Path, str]:
     if menu_type not in ["drink", "eat"]:
         raise ValueError("menu_type must be 'drink' or 'eat'")
 
-    menu_dir =  Path(config.whatpic_res_path) / f"{menu_type}_pic"
+    menu_dir = Path(config.whatpic_res_path) / f"{menu_type}_pic"
     pic_list = [entry.name for entry in menu_dir.iterdir() if entry.is_file()]
 
     pic_name = secrets.choice(pic_list)

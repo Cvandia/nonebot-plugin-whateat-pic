@@ -6,11 +6,7 @@ from pathlib import Path
 
 def get_file_names(directory: Path):
     """获取给定目录中的文件名列表。"""
-    return [
-        {"name": entry.name}
-        for entry in directory.iterdir()
-        if entry.is_file()
-    ]
+    return [{"name": entry.name} for entry in directory.iterdir() if entry.is_file()]
 
 
 def main():
