@@ -11,10 +11,10 @@ from .config import config
 
 available_urls = [
     "https://raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/",
-    "https://mirror.ghproxy.com/https://raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/",
-    "https://cdn.jsdelivr.net/gh/Cvandia/nonebot-plugin-whateat-pic@",
     "https://fastly.jsdelivr.net/gh/Cvandia/nonebot-plugin-whateat-pic@",
     "https://raw.gitmirror.com/Cvandia/nonebot-plugin-whateat-pic/",
+    "https://ghproxy.cfd/https:/raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/",
+    "https://ghfast.top/https:/raw.githubusercontent.com/Cvandia/nonebot-plugin-whateat-pic/"
 ]
 
 
@@ -37,9 +37,14 @@ async def check_resource():
 
     # 下载资源列表
     async with httpx.AsyncClient() as client:
-        if content := await _download(client, "download_list.json"):
-            resource_list = json.loads(content.decode("utf-8"))
-        else:
+        try:
+            if content := await _download(client, "download_list.json"):
+                resource_list = json.loads(content.decode("utf-8"))
+            else:
+                logger.warning("download_list.json not found!")
+                return
+        except json.decoder.JSONDecodeError:
+            logger.warning("download_list.json is not a valid json file!")
             return
 
     # 检查资源目录下文件是否完整
