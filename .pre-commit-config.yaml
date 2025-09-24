@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0  # 选择最新的稳定版本
+    rev: v6.0.0  # 选择最新的稳定版本
     hooks:
       - id: trailing-whitespace  # 去除多余的空格
       - id: end-of-file-fixer    # 确保文件以空行结束
@@ -8,7 +8,7 @@ repos:
       - id: check-added-large-files  # 检查提交中是否包含过大的文件
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.6
+    rev: v0.13.1
     hooks:
       # Run the linter.
       - id: ruff
