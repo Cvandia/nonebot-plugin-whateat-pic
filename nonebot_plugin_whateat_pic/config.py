@@ -1,6 +1,6 @@
+import nonebot_plugin_localstore as store
 from nonebot.plugin import get_plugin_config
 from pydantic import BaseModel, Field
-import nonebot_plugin_localstore as store
 
 
 class Config(BaseModel):
