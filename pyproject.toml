@@ -13,8 +13,8 @@ name = "nonebot-plugin-whateat-pic"
 version = "1.5.6"
 description = "基于Nonebot2的今天吃什么（离线版）"
 authors = [
-    {name = "Cvandia", email = "106718176+Cvandia@users.noreply.github.com"},
-    {name = "Cvandia"},
+    { name = "Cvandia", email = "106718176+Cvandia@users.noreply.github.com" },
+    { name = "Cvandia" },
 ]
 dependencies = [
     "nonebot2>=2.0.0",
@@ -23,14 +23,19 @@ dependencies = [
     "nonebot-plugin-alconna<1.0.0,>=0.53.1",
     "rich<14.0.0,>=13.9.4",
     "nonebot-plugin-apscheduler>=0.5.0",
+    "nonebot-plugin-localstore>=0.7.4",
 ]
 requires-python = "<4,>=3.9"
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 
 [project.urls]
 homepage = "https://github.com/Cvandia/nonebot-plugin-whateat-pic"
 repository = "https://github.com/Cvandia/nonebot-plugin-whateat-pic"
 
 [dependency-groups]
-dev = ["black<23.0.0,>=22.1.0", "ruff>=0.8.1", "pre-commit>=4.0.1"]
+dev = [
+    "black<23.0.0,>=22.1.0",
+    "ruff>=0.8.1",
+    "pre-commit>=4.0.1",
+]
