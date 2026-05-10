@@ -1,6 +1,6 @@
-import io
 import secrets
 
+import aiofiles
 from nonebot import get_driver
 from nonebot.adapters import Event
 from nonebot.log import logger
@@ -83,8 +83,9 @@ async def handle_eat_pic(event: Event):
         await UniMessage.text(f"cd冷却中,还有{remain_time:.2f}秒").finish()
     else:
         pic_path, pic_name = random_pic("eat")
-        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你吃🎉\n{pic_name}"))
-        send_msg.append(Image(path=pic_path))
+        send_msg: UniMessage = UniMessage(Text(f"🎉{BOT_NAME}建议你吃🎉\n{pic_name}"))
+        async with aiofiles.open(pic_path, "rb") as f:
+            send_msg.append(Image(raw=await f.read()))
         await send_msg.finish()
 
 
@@ -100,8 +101,9 @@ async def handle_drink_pic(event: Event):
         await UniMessage.text(f"cd冷却中,还有{remain_time:.2f}秒").finish()
     else:
         pic_path, pic_name = random_pic("drink")
-        send_msg = UniMessage(Text(f"🎉{BOT_NAME}建议你喝🎉\n{pic_name}"))
-        send_msg.append(Image(path=pic_path))
+        send_msg: UniMessage = UniMessage(Text(f"🎉{BOT_NAME}建议你喝🎉\n{pic_name}"))
+        async with aiofiles.open(pic_path, "rb") as f:
+            send_msg.append(Image(raw=await f.read()))
         await send_msg.finish()
 
 

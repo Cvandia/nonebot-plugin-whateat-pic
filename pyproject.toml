@@ -10,7 +10,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "nonebot-plugin-whateat-pic"
-version = "1.5.7"
+version = "1.5.8"
 description = "基于Nonebot2的今天吃什么（离线版）"
 authors = [
     { name = "Cvandia", email = "106718176+Cvandia@users.noreply.github.com" },
@@ -24,6 +24,7 @@ dependencies = [
     "rich<14.0.0,>=13.9.4",
     "nonebot-plugin-apscheduler>=0.5.0",
     "nonebot-plugin-localstore>=0.7.4",
+    "aiofiles>=0.7.0",
 ]
 requires-python = "<4,>=3.9"
 readme = "README.md"
