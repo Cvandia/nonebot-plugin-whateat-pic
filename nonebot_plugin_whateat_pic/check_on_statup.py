@@ -75,7 +75,7 @@ async def check_resource():
         exist_count = 0
 
         async def download_image(file_path: Path, file_name: str):
-            if file_path.exists():
+            if await asyncio.to_thread(file_path.exists):
                 logger.debug(f"{file_path} already exists, skipping download.")
                 nonlocal exist_count
                 exist_count += 1
