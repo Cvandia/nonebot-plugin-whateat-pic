@@ -63,6 +63,8 @@ def test_normal_name_resolves_inside_dir(files_module, tmp_path):
         "a\\b",
         "/abs/path",
         "evil\0name",
+        "C:evil",
+        "food.jpg:stream",
     ],
 )
 def test_malicious_names_are_rejected(files_module, name):
@@ -81,3 +83,31 @@ def test_save_pic_does_not_write_outside_dir(files_module, tmp_path):
         files_module.save_pic(b"data", "eat", "../../escaped")
     # 确认没有在资源目录外留下文件
     assert not (tmp_path.parent / "escaped.jpg").exists()  # noqa: S101
+
+
+def test_delete_symlink_preserves_target(files_module, tmp_path):
+    target = tmp_path / "eat_pic" / "原图.jpg"
+    target.write_bytes(b"image")
+    alias = target.with_name("别名.jpg")
+    alias.symlink_to(target.name)
+
+    files_module.delete_pic("eat", "别名")
+
+    assert target.read_bytes() == b"image"  # noqa: S101
+    assert not alias.is_symlink()  # noqa: S101
+
+
+@pytest.mark.parametrize("operation", ["save", "delete"])
+def test_external_symlink_is_rejected(files_module, tmp_path, operation):
+    target = tmp_path / "outside.jpg"
+    target.write_bytes(b"original")
+    alias = tmp_path / "eat_pic" / "别名.jpg"
+    alias.symlink_to(target)
+
+    function = files_module.save_pic if operation == "save" else files_module.delete_pic
+    args = (b"changed", "eat", "别名") if operation == "save" else ("eat", "别名")
+    with pytest.raises(ValueError, match="escape"):
+        function(*args)
+
+    assert target.read_bytes() == b"original"  # noqa: S101
+    assert alias.is_symlink()  # noqa: S101

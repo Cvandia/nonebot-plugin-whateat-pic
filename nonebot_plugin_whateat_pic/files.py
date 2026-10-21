@@ -22,17 +22,17 @@ def resolve_pic_path(img_type: str, name: str) -> Path:
     if img_type not in ["eat", "drink"]:
         raise ValueError("img_type must be 'eat' or 'drink'")
 
-    # 名字里出现路径分隔符、上级目录或空字节都视为非法，避免穿透和不可见文件名
+    # 拒绝路径分隔符、上级目录、Windows 驱动器/流分隔符和空字节
     if not name or name in [".", ".."]:
         raise ValueError("name must not be empty or a relative path segment")
-    if any(sep in name for sep in ["/", "\\", "\0"]):
+    if any(sep in name for sep in ["/", "\\", ":", "\0"]):
         raise ValueError("name must not contain path separators")
 
-    pic_dir = Path(config.whatpic_res_path) / f"{img_type}_pic"
+    pic_dir = (Path(config.whatpic_res_path) / f"{img_type}_pic").resolve()
 
-    # 二次校验: 即使上面的字符检查被绕过, resolve 后也必须仍在该目录内
-    pic_path = (pic_dir / (name + ".jpg")).resolve()
-    if not pic_path.is_relative_to(pic_dir.resolve()):
+    # 校验链接目标，但保留原始文件目录项，避免删除别名时误删原图
+    pic_path = pic_dir / (name + ".jpg")
+    if not pic_path.resolve().is_relative_to(pic_dir):
         raise ValueError("name must not escape the resource directory")
     return pic_path
 

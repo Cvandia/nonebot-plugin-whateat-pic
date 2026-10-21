@@ -61,12 +61,12 @@ del_menu_matcher = on_alconna(
 
 
 eat_pic_matcher.shortcut(
-    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜|早|晚)吃(什么|啥|点啥)$",
+    r"[今明后]?[天日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜|早|晚)吃(什么|啥|点啥)",
     fuzzy=False,
     prefix=True,
 )
 drink_pic_matcher.shortcut(
-    r"^[今|明|后]?[天|日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜|早|晚)喝(什么|啥|点啥)$",
+    r"[今明后]?[天日]?(早|中|晚)?(上|午|餐|饭|夜宵|宵夜|早|晚)喝(什么|啥|点啥)",
     fuzzy=False,
     prefix=True,
 )
@@ -132,8 +132,9 @@ async def _(img_type: str):
             img.save(img_bytesio, format="JPEG")
             send_msg_list.append(Image(raw=img_bytesio))  # type: ignore
         await send_msg_list.finish()
-    except OSError as e:
-        await UniMessage.text(f"没有找到菜单，请稍后重试\n{e}").finish()
+    except OSError:
+        logger.exception("生成菜单失败")
+        await UniMessage.text("没有找到菜单，请稍后重试").finish()
 
 
 @add_menu_matcher.handle()
@@ -173,10 +174,11 @@ async def _(
     try:
         save_pic(img, img_type=img_type, name=name)
         await UniMessage.text(f"成功添加{name}").finish()
-    except ValueError as e:
-        await UniMessage.text(f"菜名不合法，请重新输入\n{e}").finish()
-    except OSError as e:
-        await UniMessage.text(f"添加失败，请稍后重试\n{e}").finish()
+    except ValueError:
+        await UniMessage.text("菜名不合法，请重新输入").finish()
+    except OSError:
+        logger.exception("添加菜单失败")
+        await UniMessage.text("添加失败，请稍后重试").finish()
 
 
 @del_menu_matcher.handle()
@@ -204,10 +206,13 @@ async def _(img_type: str, name: str):
     try:
         delete_pic(img_type, name)  # type: ignore
         await UniMessage.text(f"成功删除{name}").finish()
-    except ValueError as e:
-        await UniMessage.text(f"菜名不合法，请重新输入\n{e}").finish()
-    except FileNotFoundError as e:
-        await UniMessage.text(f"删除失败, {e}").finish()
+    except ValueError:
+        await UniMessage.text("菜名不合法，请重新输入").finish()
+    except FileNotFoundError:
+        await UniMessage.text("删除失败，未找到该菜品或饮品").finish()
+    except OSError:
+        logger.exception("删除菜单失败")
+        await UniMessage.text("删除失败，请稍后重试").finish()
 
 
 # 每日8点清空用户数据
