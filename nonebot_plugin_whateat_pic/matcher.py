@@ -173,6 +173,8 @@ async def _(
     try:
         save_pic(img, img_type=img_type, name=name)
         await UniMessage.text(f"成功添加{name}").finish()
+    except ValueError as e:
+        await UniMessage.text(f"菜名不合法，请重新输入\n{e}").finish()
     except OSError as e:
         await UniMessage.text(f"添加失败，请稍后重试\n{e}").finish()
 
@@ -202,6 +204,8 @@ async def _(img_type: str, name: str):
     try:
         delete_pic(img_type, name)  # type: ignore
         await UniMessage.text(f"成功删除{name}").finish()
+    except ValueError as e:
+        await UniMessage.text(f"菜名不合法，请重新输入\n{e}").finish()
     except FileNotFoundError as e:
         await UniMessage.text(f"删除失败, {e}").finish()
 
